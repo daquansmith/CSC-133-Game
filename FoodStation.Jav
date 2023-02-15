@@ -1,15 +1,21 @@
 package com.mycompany.a1;
 
+import java.util.Random;
+
 import com.codename1.charts.util.ColorUtil;
 
 public class FoodStation extends Fixed {
+	
 	private int capacity;
-	private int color=setColor(ColorUtil.rgb(0, 255, 0)); 
+	private int size;
+	Random rndm;
 	
-	
-	
-	
-	
+	public FoodStation () {
+		super();
+		setColor(0,255,0);
+		this.size= rndm.nextInt(50)+10;
+		this.capacity=size; 
+	}
 	
 	public int getCapacity() {
 		return capacity;
@@ -18,4 +24,9 @@ public class FoodStation extends Fixed {
 	public void setCapacity() {
 		this.capacity = this.getSize();
 	} 
+	
+	
+	
+	
 }
+
