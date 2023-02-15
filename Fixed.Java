@@ -4,11 +4,12 @@ import com.codename1.charts.models.Point;
 
 public abstract class Fixed extends GameObject {
 	
-	public Fixed(Point location) {
+	public Fixed() {
 		super();
 	}
 	
-	public void setLocation(location) {}
+	public void setLocation(Point location) {}
 
-	
+
 }
+
