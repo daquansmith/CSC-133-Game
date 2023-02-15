@@ -9,15 +9,16 @@ public abstract class GameObject {
 	
 	private Random rndm= new Random(); 
 	private int size;//all objects have sizes 
-	private int color; //all objects have colors
 	private Point location; //all objects have a specific location
+	private int color;//all objects have colors
 	
 	public GameObject() {
+		int color=ColorUtil.rgb(0,0,0); 
+		int size=0; 
 		float x= (float) ((float) (Math.round(1000.0* rndm.nextFloat()*10.0))/10.0);
 		float y= (float) ((float) (Math.round(1000.0*rndm.nextFloat()*10.0))/10.0); 
 	
 		//In case the object gets too close to the edge we need to add this
-		
 		if(x>999) {
 			x=999;
 		}
@@ -25,7 +26,6 @@ public abstract class GameObject {
 		if (y>999) {
 			y=999; 
 		}
-		
 		//setting location 
 		location = new Point (x,y); 
 	}
@@ -41,18 +41,27 @@ public abstract class GameObject {
 	public int getColor() {
 		return color;
 	}
-	public void setColor(int color) {
-		this.color = color;
+	public void setColor(int R,int G, int B) {
+		
 	}
-
-	public Point getLocationx() {
+	//Getting the location
+	public Point getLocation() {
 		return location;
 	}
-
+	//Setting the location
 	public void setLocation(Point location) {
 		this.location.setX((float) (((float)Math.round(location.getX())*10.0)/10.0)); 
 		this.location.setY((float) (((float)Math.round(location.getY())*10.0)/10.0)); 
 	}
 	
+	//ToString object override
+	public String toString() {
+		String displayString;
+		
+		return displayString="Loc = "+location.getX() +","+ location.getY()+"Color = ["
+					  +ColorUtil.red(color) + ","+ColorUtil.green(color)+","
+					  + ","+ColorUtil.blue(color)+"]" + "size = "+getSize(); 
+	}
 	
 }
+
