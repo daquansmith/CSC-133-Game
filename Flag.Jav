@@ -1,63 +1,36 @@
 package com.mycompany.a1;
 
 import com.codename1.charts.models.Point;
-import com.codename1.charts.util.ColorUtil;
-import java.util.Random; 
+import com.codename1.charts.util.ColorUtil; 
 
-//abstract class for objects that are present in game world
-public abstract class GameObject {
+public class Flag extends Fixed{
+	private int sequenceNumber;
+	private int size; 
 	
-	private Random rndm= new Random(); 
-	private int size;//all objects have sizes 
-	private int rgb; //all objects have colors
-	private Point location; //all objects have a specific location
-	//Game object constructor
-	public GameObject() {
-		float x= (float) ((float) (Math.round(1000.0* rndm.nextFloat()*10.0))/10.0);
-		float y= (float) ((float) (Math.round(1000.0*rndm.nextFloat()*10.0))/10.0); 
+	public Flag(int sequenceNumber) {
+		super(); 
+		size=10; 
+		this.sequenceNumber=sequenceNumber; 
 	
-		//In case the object gets too close to the edge we need to add this
-		
-		if(x>999) {
-			x=999;
-		}
-		
-		if (y>999) {
-			y=999; 
-		}
-		
-		//setting location 
-		location = new Point (x,y); 
 	}
 	
-	
-	
-	
-	//Getters and setters 
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
+
 	public int getSize() {
 		return size;
-	}
-	//Using colorUtil??
-	public int getColor() {
-		return rgb;
-	}
+	} 
 	
-	public void setColor(int r,int g,int b) {
-		
-		
+	public String toString() {
+		String parentString=super.toString(); 
+		String flagString=" seqNum: "+sequenceNumber; 
+		String displayString ="Flag:"+parentString+flagString; 
+		return displayString; 
 	}
 
-	public Point getLocation() {
-		return location;
-	}
-
-	public void setLocation(Point location) {
-		this.location.setX((float) (((float)Math.round(location.getX())*10.0)/10.0)); 
-		this.location.setY((float) (((float)Math.round(location.getY())*10.0)/10.0)); 
-	}
-	
-    public void setLocation (float x, float y) {
-    	
-    }
-	
 }
