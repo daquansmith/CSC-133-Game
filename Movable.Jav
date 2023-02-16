@@ -1,5 +1,4 @@
 package com.mycompany.a1;
-
 import com.codename1.charts.models.Point;
 
 public abstract class Moveable extends GameObject {
@@ -8,19 +7,24 @@ public abstract class Moveable extends GameObject {
 	private int speed;
 	private int heading;
 	 
-	public Moveable() {
-		super(); 
+	public Moveable (int color) {
+		super(color); 
 	}
+	
+	public Moveable (int color,int size) {
+		super(color,size); 
+	}
+	
 	
 	//the move for a moveable Object
 	public void move() { 
 		Point oldLocation;//old location before move
 		Point newLocation;//new location after
-		int angle;//Theta
+		float angle;//Theta
 		float deltaX;
 		float deltaY;
 		//grabbing location of object 
-		oldLocation = getLocation(); 
+		oldLocation =getLocation(); 
 		//instantiating new location Point
 		newLocation = new Point();
 
@@ -31,6 +35,17 @@ public abstract class Moveable extends GameObject {
 		//casting to floats 
 		deltaX=(float) (Math.cos(angle)*speed); 
 		deltaY=(float) (Math.sin(angle)*speed); 
+		
+		//Making this to make sure they dont go into straight lines 
+		
+		if(heading==0 || heading==180) {
+			deltaY=(float) (Math.sin(Math.toRadians(angle))*speed); 
+	    }else if(heading==90 || heading==270) {
+	    	deltaX=(float) (Math.cos(Math.toRadians(angle))*speed); 
+	    }else {
+	    	deltaX=(float) (Math.cos(Math.toRadians(angle))*speed); 
+	    	deltaY=(float) (Math.sin(Math.toRadians(angle))*speed);
+	    }
 		
 	
 		//changing values of x and y to be be new location
@@ -52,7 +67,7 @@ public abstract class Moveable extends GameObject {
 	}
 	
 	public void setSpeed(int speed) {
-		this.speed=speed;
+		this.speed=this.speed+speed;
 	}
 	
 	public void setHeading(int heading) {
@@ -66,4 +81,5 @@ public abstract class Moveable extends GameObject {
 		String displayString=parentString+s;
 		return displayString; 
 	}
+
 }
