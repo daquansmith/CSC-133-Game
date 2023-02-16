@@ -1,7 +1,6 @@
 package com.mycompany.a1;
 
 import java.util.Random;
-
 import com.codename1.charts.util.ColorUtil;
 
 public class FoodStation extends Fixed {
@@ -11,8 +10,7 @@ public class FoodStation extends Fixed {
 	Random rndm;
 	
 	public FoodStation () {
-		super();
-		setColor(0,255,0);
+		super(ColorUtil.rgb(0, 255, 0));
 		this.size= rndm.nextInt(50)+10;
 		this.capacity=size; 
 	}
@@ -22,11 +20,14 @@ public class FoodStation extends Fixed {
 	}
 
 	public void setCapacity() {
-		this.capacity = this.getSize();
+		this.capacity = getSize();
 	} 
 	
-	
-	
-	
-}
+	public String toString() {
+		String parentString=super.toString(); 
+		String foodStationString=" capacity: "+capacity; 
+		String displayString ="Flag:"+parentString+foodStationString; 
+		return displayString; 
+	}
 
+}
