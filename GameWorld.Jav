@@ -5,7 +5,13 @@ import java.util.ArrayList;
 public class GameWorld {
 	ArrayList<GameObject> listOfObjects; 
 	
-	public Gameworld() {
+	private int lives; 
+	private int clock;
+	private boolean gameOver;
+	
+	
+	
+	public GameWorld() {
 		init(); 
 	}
 	
@@ -13,6 +19,22 @@ public class GameWorld {
 		
 		
 	}
+	
+	
+	
+	public void tick() {
+		
+		clock++; 
+		
+		
+		
+		
+	}
+	
+	
+
+}
+}
 
 }
 
