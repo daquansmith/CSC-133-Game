@@ -8,8 +8,7 @@ public class Flag extends Fixed{
 	private int size; 
 	
 	public Flag(int sequenceNumber) {
-		super(); 
-		size=10; 
+		super(ColorUtil.rgb(0, 0, 255),10); 
 		this.sequenceNumber=sequenceNumber; 
 	
 	}
