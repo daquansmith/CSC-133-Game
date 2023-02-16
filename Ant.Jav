@@ -1,7 +1,8 @@
 package com.mycompany.a1;
+
 import com.codename1.charts.util.ColorUtil;
 
-public class Ant extends Moveable  {
+public class Ant extends Moveable implements ISteerable{
 	private int maxSpeed; 
 	private int foodLevel; 
 	private int foodConsumptionRate;
@@ -10,13 +11,14 @@ public class Ant extends Moveable  {
 	private int size;
 	
 	public Ant() {
-		super(); 
-		setColor(255,0,0);
+		super();
 		size=20; 
 		setFoodLevel(50); 
 		setLastFlagReached(1);
-		setMaxSpeed(50); 
-			
+		setMaxSpeed(100); 
+		setFoodConsumptionRate(2); 
+		setHealthLevel(10); 
+		super.setLocation(200,300); 
 	}
 	
 	
@@ -59,7 +61,15 @@ public class Ant extends Moveable  {
 		this.maxSpeed = maxSpeed;
 	} 
 	
-	
-	
+	public String toString() {
+		String parentString=super.toString(); 
+		String antString="maxSpeed: "+ getMaxSpeed() +" foodConsumptionRate: "+ getFoodConsumptionRate(); 
+		String displayString ="Ant:"+parentString+antString; 
+		return displayString; 
+	}
+	public void steer() {
+		
+		
+		
+	}
 }
-
