@@ -1,10 +1,10 @@
 package com.mycompany.a1;
+
 import com.codename1.charts.models.Point;
 import com.codename1.charts.util.ColorUtil; 
 
 public class Flag extends Fixed{
 	private int sequenceNumber;
-	private int size; 
 	
 	public Flag(int sequenceNumber) {
 		super(ColorUtil.rgb(0, 0, 255),10); 
@@ -21,7 +21,7 @@ public class Flag extends Fixed{
 	}
 
 	public int getSize() {
-		return size;
+		return super.getSize();
 	} 
 	
 	public String toString() {
