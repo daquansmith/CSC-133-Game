@@ -7,7 +7,7 @@ import java.util.Random;
 //abstract class for objects that are present in game world
 public abstract class GameObject {
 	
-	private Random rndm= new Random(); 
+	public Random rndm= new Random(); 
 	private int size;//all objects have sizes 
 	private Point location; //all objects have a specific location
 	private int color;//all objects have colors
@@ -41,9 +41,6 @@ public abstract class GameObject {
 		this.location=new Point(x,y); 
 	}
 	
-	
-	
-	
 	//Getters and setters 
 	public int getSize() {
 		return size;
@@ -64,6 +61,10 @@ public abstract class GameObject {
 	public void setColor(int color) {
 		this.color=color;
 		
+	}
+	
+	public void setSize(int size) {
+		this.size=size;
 	}
 	//Getting the location
 	public Point getLocation() {
