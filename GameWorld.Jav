@@ -1,6 +1,7 @@
 package com.mycompany.a1;
+import java.util.ArrayList;
 
-import java.util.ArrayList; 
+import com.codename1.charts.util.ColorUtil; 
 
 public class GameWorld {
 	ArrayList<GameObject> listOfObjects; 
@@ -15,19 +16,25 @@ public class GameWorld {
 	//Using this variable to end the game
 	private boolean endGame; 
 	
+	//Game world cals init to initialize the game world
 	public GameWorld() {
 		init(); 
 	}
-	
+	//The initilization of objects
 	public void init() {
-		listOfObjects=new ArrayList<GameObject>(); 
-		this.clock=0; 
-		this.antCount=0;
-		this.spiderCount=0;
-		this.flagCount=0;
-		this.foodStationCount=0;
-		this.endGame=false;
-		addAllObjects(); 
+		listOfObjects=new ArrayList<GameObject>(); //holds all objects
+		this.clock=0; //holds game time
+		this.antCount=0;//number of ants
+		this.spiderCount=0;//number of spiders
+		this.flagCount=0;//number of flags
+		this.foodStationCount=0;//number of food stations
+		this.endGame=false;//Holds if the game has ended
+		addAllObjects(); //adds all objects for the game
+	}
+	
+	//Getters and setters for some of the attributes located here
+	public int getTime() {
+		return clock; 
 	}
 	
 	//Using this method to add game obejects
@@ -49,11 +56,9 @@ public class GameWorld {
 		for(int i=0;i<spiders;i++) {
 			listOfObjects.add(new Spider()); 
 			spiderCount=0; 
-			
 		}
 		listOfObjects.add(new Ant()); 
 		antCount++; 
-		
 	}
 	
 	//Game Methods
@@ -76,46 +81,179 @@ public class GameWorld {
 		System.out.println("Ant decreases speed");
 		
 		for(int i=0;i<listOfObjects.size();i++) {
-			((Ant)listOfObjects.get(i)).decreaseAntSpeed(); 
+		   if(listOfObjects.get(i) instanceof Ant) {
+			   ((Ant)listOfObjects.get(i)).decreaseAntSpeed(); 
+		   }
 		}
 	}
 	
 	
-	//Turn ant left 'l'
+	//Turn ant left 'r'
 	public void turnAntRight() {
-		
+		System.out.println("Ant has tured right"); 
+		for(int i=0; i<listOfObjects.size();i++) {
+			if(listOfObjects.get(i) instanceof Ant) {
+				((Ant)listOfObjects.get(i)).steer('r');
+			}
+		}
 	}
 	
-	//Turn ant right 'r'
+	//Turn ant right 'l'
 	public void turnAntLeft() {
-		
-		
+		System.out.println("Ant has tured left"); 
+		for(int i=0; i<listOfObjects.size();i++) {
+			if(listOfObjects.get(i) instanceof Ant) {
+				((Ant)listOfObjects.get(i)).steer('l');
+			}
+		}
 	}
 	
 	//Ant collides with food station 'f'
 	public void collisionFoodStation() {
 		System.out.println("Ant collided with food station"); 
+		for(int i=0;i<listOfObjects.size();i++) {
+			if(listOfObjects.get(i) instanceof Ant) {
+				for(int j=0;j<listOfObjects.size();j++) {
+					if(listOfObjects.get(j) instanceof FoodStation) {
+						if(((FoodStation)listOfObjects.get(j)).getCapacity()!=0) {
+							int food=((FoodStation)listOfObjects.get(j)).getCapacity(); 
+							((Ant)listOfObjects.get(i)).setFoodLevel(food); 
+							((FoodStation)listOfObjects.get(j)).setCapacity(0); 
+							((FoodStation)listOfObjects.get(j)).setColor(ColorUtil.rgb(0,100,0));
+							addNewFoodStation();
+							foodStationCount++; 	
+						}
+					}
+				}
+			}
+		}
 		
 	}
+	//adding a new food station after the last one was hit 
+	public void addNewFoodStation(){
+		listOfObjects.add(new FoodStation()); 
+	}
 	
-	//Ant collides with spider 'g'
-	public void spiderColliion() {
+	//Ant collides with flag 1-9
+	public void collisionFlag(int f) {
+		System.out.println("There was a collision between the Ant and a Flag"); 
+		//checks for all flags and sees whether or not the ant is at the correct flag 
+		for( int i=0;i<listOfObjects.size();i++) {
+			int currLastFlagReached=((Ant) listOfObjects.get(i)).getLastFlagReached(); 
+			currLastFlagReached++;
+			if(currLastFlagReached==f) {
+				System.out.println("Next Flag Reached"); 
+				((Ant) listOfObjects.get(i)).setLastFlagReached(f); 
+			}else {
+				System.out.println("Have already passed this flag or you have yet to reach it");
+			}
+			if(currLastFlagReached==flagCount) {
+				System.out.println("You have reached the last flag and won the game");
+				System.exit(0);
+			}
+		}
 		
+	}
+	//Ant collides with spider 'g'
+	public void spiderCollision() {
+		System.out.println("Ant has collided with a Spider"); 
+		for(int i=0;i<listOfObjects.size();i++) {
+			if(listOfObjects.get(i) instanceof Ant) {
+				//check if ant healthlevel is zero
+				if(((Ant) listOfObjects.get(i)).getHealthLevel()==0){
+					System.out.println("Your ant has died"); 
+					//check if the ant still has lives left
+					if(((Ant) listOfObjects.get(i)).getLives()!=0) {
+						//put the ant back at the last flag reached
+						int lastFlag=((Ant)listOfObjects.get(i)).getLastFlagReached(); 
+						for(int k=0;k<listOfObjects.size();k++) {
+							if(listOfObjects.get(k) instanceof Flag) {
+								if(lastFlag== (((Flag)listOfObjects.get(k)).getSequenceNumber())) {
+									float flagX=(((Flag)listOfObjects.get(k)).getX()) ;
+									float flagY=(((Flag)listOfObjects.get(k)).getY()) ;
+									((Ant)listOfObjects.get(i)).antReset(flagX, flagY);
+								}
+							}
+						}
+					}else {
+						System.out.println("Game is Over");
+						System.exit(0);
+					}
+				}else {
+					((Ant)listOfObjects.get(i)).setHealthLevel(((Ant)listOfObjects.get(i)).getHealthLevel()-1);
+					((Ant)listOfObjects.get(i)).healthLevelCheck(); 
+				}
+			}
+		} 		
 	}
 	
 	//Clock tick 't'
 	public void tick() {
+		System.out.println("Clock Ticks"); 
+		clock++; //adding to timer
 		
+		for(int i=0;i<listOfObjects.size();i++) {
+			
+			if (listOfObjects.get(i) instanceof Ant) {
+				//checks if the ant food level is 0 or not
+				if(((Ant)listOfObjects.get(i)).getFoodLevel()!=0){
+					//taking away food from ant 
+					((Ant)listOfObjects.get(i)).foodLevelTick();
+					//moving the ant
+					((Ant)listOfObjects.get(i)).move(); 
+					//setting heading for the ant 
+					((Ant)listOfObjects.get(i)).setHeading(0);
+		
+				}else {
+					System.out.println("No food! You have lost a life"); 
+					int lastFlag=((Ant)listOfObjects.get(i)).getLastFlagReached(); 
+					
+						for(int k=0;k<listOfObjects.size();k++) {
+							if(listOfObjects.get(i) instanceof Flag) {
+								//Finds the last flag the ant has reached and moves player there 
+								if(lastFlag==((Flag) listOfObjects.get(i)).getSequenceNumber()) {
+									float flagX= ((Flag)listOfObjects.get(i)).getX();
+									float flagY= ((Flag)listOfObjects.get(i)).getY();
+									((Ant)listOfObjects.get(i)).antReset(flagX,flagY);
+					}
+					
+				}
+			 }	
+		 }
+	  }
+			//makes all spiders move
+			if(listOfObjects.get(i) instanceof Spider) {
+				((Spider)listOfObjects.get(i)).move(); 
+			}
 	}
-	
+}
 	//Display the game stats 'd'
 	public void display() {
-		
+		System.out.println("Displaying all game stats"); 
+		//displays all of the ant stats (health level, food level, last flag reached etc...)
+		for (int i=0;i<listOfObjects.size();i++) {
+			if (listOfObjects.get(i) instanceof Ant) {
+				int lives=((Ant) listOfObjects.get(i)).getLives(); 
+				int time=getTime(); 
+				int lastFlagReached= ((Ant) listOfObjects.get(i)).getLastFlagReached(); 
+				int foodLevel= ((Ant)listOfObjects.get(i)).getFoodLevel(); 
+				int healthLevel=((Ant)listOfObjects.get(i)).getHealthLevel();
+				System.out.println("Number of Lives: "+lives);
+				System.out.println("Current time: "+time); 
+				System.out.println("Last Flag Reached: "+lastFlagReached); 
+				System.out.println("Current Food Level: "+foodLevel);
+				System.out.println("Current Health Level: " +healthLevel); 
+				
+			}
+		}
 	}
 	
 	//display the map of the objects in the game 'm'
 	public void map() {
-		
+		System.out.println("Your Game: ");
+		for(int i=0;i<listOfObjects.size();i++) {
+			System.out.println(listOfObjects.get(i).toString());
+		}
 	}
 	
 	//Asking to end the game
@@ -124,11 +262,9 @@ public class GameWorld {
 	}
 	
 	//The person did not want to exit the game
-	
 	public void noExit() {
 		
 	}
 	
 
 }
-
