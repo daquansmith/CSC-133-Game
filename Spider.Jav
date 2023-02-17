@@ -4,9 +4,8 @@ import java.util.Random;
 import com.codename1.charts.util.ColorUtil; 
 
 public class Spider extends Moveable{
-
 	public Spider() {
-		super(ColorUtil.rgb(0,0,255));
+		super(ColorUtil.rgb(0,0,0));
 		final int MINIMUM_SIZE=10;
 		final int MAXIMUM_SIZE=50; 
 		super.setHeading(rndm.nextInt(360));
@@ -22,4 +21,10 @@ public class Spider extends Moveable{
 		this.setHeading(super.getHeading()+rndm.nextInt(5)); 
 	}
 	
+	public String toString() {
+		String parentString=super.toString(); 
+		String spiderString=" Size= "+ getSize(); 
+		String displayString ="Spider:"+parentString+spiderString; 
+		return displayString; 
+	}
 }
