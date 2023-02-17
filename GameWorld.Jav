@@ -23,13 +23,36 @@ public class GameWorld {
 		listOfObjects=new ArrayList<GameObject>(); 
 		this.clock=0; 
 		this.antCount=0;
+		this.spiderCount=0;
 		this.flagCount=0;
 		this.foodStationCount=0;
 		this.endGame=false;
+		addAllObjects(); 
 	}
 	
 	//Using this method to add game obejects
-	public void addObject() {
+	public void addAllObjects() {
+		int foodStation=3; 
+		int flag=4;
+		int spiders=2; 
+		
+		for(int i=1;i<=flag;i++) {
+			listOfObjects.add(new Flag(i));
+			flagCount++; 
+		}
+		
+		for(int i=1;i<=foodStation;i++) {
+			listOfObjects.add(new FoodStation()); 
+			foodStationCount++;
+		}
+		
+		for(int i=0;i<spiders;i++) {
+			listOfObjects.add(new Spider()); 
+			spiderCount=0; 
+			
+		}
+		listOfObjects.add(new Ant()); 
+		antCount++; 
 		
 	}
 	
@@ -52,6 +75,9 @@ public class GameWorld {
 	public void decreaseSpeed() {
 		System.out.println("Ant decreases speed");
 		
+		for(int i=0;i<listOfObjects.size();i++) {
+			((Ant)listOfObjects.get(i)).decreaseAntSpeed(); 
+		}
 	}
 	
 	
@@ -62,6 +88,7 @@ public class GameWorld {
 	
 	//Turn ant right 'r'
 	public void turnAntLeft() {
+		
 		
 	}
 	
