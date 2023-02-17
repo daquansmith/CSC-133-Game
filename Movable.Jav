@@ -1,4 +1,5 @@
 package com.mycompany.a1;
+
 import com.codename1.charts.models.Point;
 
 public abstract class Moveable extends GameObject {
@@ -83,3 +84,4 @@ public abstract class Moveable extends GameObject {
 	}
 
 }
+
