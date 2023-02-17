@@ -1,32 +1,33 @@
 package com.mycompany.a1;
+import com.codename1.charts.models.Point;
+import com.codename1.charts.util.ColorUtil; 
 
-import java.util.Random;
-import com.codename1.charts.util.ColorUtil;
-
-public class FoodStation extends Fixed {
+public class Flag extends Fixed{
+	private int sequenceNumber;
+	private int size; 
 	
-	private int capacity;
-	private int size;
-	Random rndm;
+	public Flag(int sequenceNumber) {
+		super(ColorUtil.rgb(0, 0, 255),10); 
+		this.sequenceNumber=sequenceNumber; 
 	
-	public FoodStation () {
-		super(ColorUtil.rgb(0, 255, 0));
-		this.size= rndm.nextInt(50)+10;
-		this.capacity=size; 
 	}
 	
-	public int getCapacity() {
-		return capacity;
+	public int getSequenceNumber() {
+		return sequenceNumber;
 	}
 
-	public void setCapacity() {
-		this.capacity = getSize();
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
+
+	public int getSize() {
+		return size;
 	} 
 	
 	public String toString() {
 		String parentString=super.toString(); 
-		String foodStationString=" capacity: "+capacity; 
-		String displayString ="Flag:"+parentString+foodStationString; 
+		String flagString=" seqNum: "+sequenceNumber; 
+		String displayString ="Flag:"+parentString+flagString; 
 		return displayString; 
 	}
 
