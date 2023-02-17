@@ -6,12 +6,12 @@ import java.util.Random;
 
 //abstract class for objects that are present in game world
 public abstract class GameObject {
-	
 	public Random rndm= new Random(); 
 	private int size;//all objects have sizes 
 	private Point location; //all objects have a specific location
 	private int color;//all objects have colors
 	
+	//abstract constructor
 	public GameObject(int color) {
 		this.color=color; 
 		float x= (float) rndm.nextFloat()*1000;
@@ -25,7 +25,7 @@ public abstract class GameObject {
 		this.location=new Point(x,y); 
 	}
 	
-
+	//Abstract constructor
 	public GameObject(int color, int size) {
 		this.color=color; 
 		this.size=size; 
@@ -78,7 +78,7 @@ public abstract class GameObject {
 	
 	//ToString object override
 	public String toString() {
-		String displayString="Loc = "+location.getX() +","+ location.getY()+"Color = ["+ColorUtil.red(color) + ","+ColorUtil.green(color)+","+ ","+ColorUtil.blue(color)+"]" + "size = "+getSize(); ;
+		String displayString="Loc = "+location.getX() +","+ location.getY()+" Color = ["+ColorUtil.red(color) + ","+ColorUtil.green(color)+","+ColorUtil.blue(color)+"]" + " size = "+getSize(); ;
 		return displayString;
 	}
 	
