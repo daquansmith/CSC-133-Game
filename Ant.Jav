@@ -59,7 +59,7 @@ public class Ant extends Moveable implements ISteerable{
 	public void setMaxSpeed(int maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	} 
-	
+	//Overrides the to String 
 	public String toString() {
 		String parentString=super.toString(); 
 		String antString="maxSpeed: "+ getMaxSpeed() +" foodConsumptionRate: "+ getFoodConsumptionRate(); 
@@ -69,6 +69,14 @@ public class Ant extends Moveable implements ISteerable{
 	
 	//steer left or right
 	public void steer() {
+		
+	}
+	
+	public void turnAntRight() { 
+		
+	}
+	
+	public void turnAntLeft() {
 		
 	}
 
