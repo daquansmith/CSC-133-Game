@@ -1,5 +1,4 @@
 package com.mycompany.a1;
-
 import com.codename1.charts.util.ColorUtil;
 
 public class Ant extends Moveable implements ISteerable{
@@ -8,19 +7,19 @@ public class Ant extends Moveable implements ISteerable{
 	private int foodConsumptionRate;
 	private int healthLevel; 
 	private int lastFlagReached;
-	private int size;
+	private int lives; 
+	
 	
 	public Ant() {
-		super();
-		size=20; 
-		setFoodLevel(50); 
-		setLastFlagReached(1);
-		setMaxSpeed(100); 
-		setFoodConsumptionRate(2); 
-		setHealthLevel(10); 
-		super.setLocation(200,300); 
+		super(ColorUtil.rgb(255, 0, 0), 10);
+		this.foodLevel=(50); 
+		this.lastFlagReached=1;
+		this.maxSpeed=100; 
+		this.foodConsumptionRate=2; 
+		this.healthLevel=10; 
+		this.lives=3; 
+		
 	}
-	
 	
 	public int getFoodLevel() {
 		return foodLevel;
@@ -67,9 +66,42 @@ public class Ant extends Moveable implements ISteerable{
 		String displayString ="Ant:"+parentString+antString; 
 		return displayString; 
 	}
+	
+	//steer left or right
 	public void steer() {
 		
-		
-		
 	}
+
+
+	public int getLives() {
+		return lives;
+	}
+
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+	//Accelerate speed of ant
+	public void accelerateSpeed() {
+		int currentSpeed= getSpeed(); 
+		if(currentSpeed!=getMaxSpeed()) {
+			this.setSpeed(currentSpeed);
+		}
+	}
+		
+	//Brake or decrease speed of ant
+	public void decreaseAntSpeed() {
+		int currSpeed=getSpeed(); 
+		int negSpeed=currSpeed*-1;
+		if(currSpeed>0) {
+			this.setSpeed(negSpeed);
+		}
+	}
+		
+	//Taking food level down on every tick 
+	public void foodLevelTick() {
+		this.setFoodLevel(this.getFoodLevel()-this.getFoodConsumptionRate());
+	}
+		
 }
