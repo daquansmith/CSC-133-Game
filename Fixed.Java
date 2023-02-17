@@ -1,8 +1,8 @@
 package com.mycompany.a1;
+
 import com.codename1.charts.models.Point;
 
-public abstract class Fixed extends GameObject {
-	
+public abstract class Fixed extends GameObject{
 	public Fixed(int color) {
 		super(color);
 	}
@@ -12,3 +12,4 @@ public abstract class Fixed extends GameObject {
 	
 	public void setLocation(Point location) {}
 }
+
