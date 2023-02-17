@@ -1,39 +1,97 @@
 package com.mycompany.a1;
-
-import java.util.Random;
-import com.codename1.charts.util.ColorUtil;
-
-public class FoodStation extends Fixed{
-	private int capacity;
-	private int size=rndm.nextInt(50)+10;
+import com.codename1.ui.Form;
+import com.codename1.ui.events.ActionListener;
+import com.codename1.ui.Label;
+import com.codename1.ui.TextField;
+import com.codename1.ui.events.ActionEvent;
+import java.lang.String;
+public class Game extends Form{
+	private GameWorld gw; 
 	
-	public FoodStation () {
-		super(ColorUtil.rgb(0, 255, 0));
-		super.setSize(size);
-		this.capacity=this.size; 
-		
-	}
-		
-	public int getCapacity() {
-		return capacity;
+	public Game() {
+		gw =new GameWorld(); 
+		gw.init();
+		play(); 
 	}
 
-	public void setCapacity() {
-		this.capacity = getSize();
-	} 
-	
-	public void setCapacity(int food) {
-		this.capacity=food; 
+	private void play() {
+		Label myLabel=new Label("Enter a Command:");
+		this.addComponent(myLabel);
+		final TextField myTextField=new TextField();
+		this.addComponent(myTextField);
+		this.show();
 		
-	}
-	
-	public String toString() {
-		String parentString=super.toString(); 
-		String foodStationString=" capacity: "+capacity; 
-		String displayString ="Food Station:"+parentString+foodStationString; 
-		return displayString; 
-	}
+		
+		myTextField.addActionListener(new ActionListener(){
+			
+			public void actionPerformed(ActionEvent evt) {
+				String sCommand=myTextField.getText().toString();
+				myTextField.clear();
+					if(sCommand.length() != 0)
+						switch (sCommand.charAt(0)) {
+							
+							case 'a':
+								gw.accelerateSpeed(); 
+								break;
+							case 'b':
+								gw.decreaseSpeed();
+								break;
+							case 'l':
+								gw.turnAntLeft(); 
+								break; 
+							case 'r':
+								gw.turnAntRight(); 
+								break; 
+							
+							case '1' :
+								gw.collisionFlag(1);
+								break; 	
+							case '2':
+								gw.collisionFlag(2); 
+								break;
+							case '3':
+								gw.collisionFlag(3);
+								break; 
+							case '4':
+								gw.collisionFlag(4);
+								break; 
+							case '5':
+								gw.collisionFlag(5);
+								break; 
+							case '6':
+								gw.collisionFlag(6);
+								break; 
+							case '7':
+								gw.collisionFlag(7);
+								break; 
+							case '8':
+								gw.collisionFlag(8);
+								break; 
+							case '9':
+								gw.collisionFlag(9);
+								break; 
+							case 'f':
+								gw.collisionFoodStation();
+								break; 
+							case 'g':
+								gw.spiderCollision(); 
+								break; 
+							case 't':
+								gw.tick();
+								break; 
+							case 'd':
+								gw.display();
+								break;
+							case 'm':
+								gw.map();
+								break;
+							default:
+								System.out.println("\nInput is incorrect"); 
+						}
+			}
+		}
+	    );
+		
 
 }
-	
-
+}
