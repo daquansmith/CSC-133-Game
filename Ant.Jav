@@ -12,67 +12,70 @@ public class Ant extends Moveable{
 	
 	
 	public Ant() {
-		super(ColorUtil.rgb(255, 0, 0), 20);
-		this.foodLevel=(30); 
-		this.lastFlagReached=1;
-		this.maxSpeed=50; 
-		this.foodConsumptionRate=2; 
-		this.healthLevel=10;
-		this.maxHealth=10; 
-		this.lives=3; 
+		super(ColorUtil.rgb(255, 0, 0), 20);//making ant red and size 20
+		this.foodLevel=(30); //starts out at 30 food level 
+		this.lastFlagReached=1;//first flag needed to be reached
+		this.maxSpeed=50; //max speed to 50
+		this.foodConsumptionRate=2; //consumption rate per tick 
+		this.healthLevel=10;//health level of 10 before losing life
+		this.maxHealth=10; //max health of the ant
+		this.lives=3; // starts with three lives
 		
 	}
+	//get max health
 	public int maxHealth() {
 		return this.maxHealth; 
 	}
+	//set max health 
 	public void setmaxHealth(int maxHealth) {
 		this.maxHealth=maxHealth; 
 	}
-	
+	//getting food level
 	public int getFoodLevel() {
 		return foodLevel;
 	}
+	//setting food level 
 	public void setFoodLevel(int foodLevel) {
 		this.foodLevel = foodLevel;
 	}
-
+	//getting food consumption 
 	public int getFoodConsumptionRate() {
 		return foodConsumptionRate;
 	}
-
+	//setting foos consumption 
 	public void setFoodConsumptionRate(int foodConsumptionRate) {
 		this.foodConsumptionRate = foodConsumptionRate;
 	}
-
+	//getting last flag reached
 	public int getLastFlagReached() {
 		return lastFlagReached;
 	}
-
+	//setting last flag reached
 	public void setLastFlagReached(int lastFlagReached) {
 		this.lastFlagReached = lastFlagReached;
 	}
-
+	//get health level 
 	public int getHealthLevel() {
 		return healthLevel;
 	}
-
+	//set health level 
 	public void setHealthLevel(int healthLevel) {
 		this.healthLevel = healthLevel;
 	}
-
+	//get max speeed
 	public int getMaxSpeed() {
 		return maxSpeed;
 	}
-	
+	//set maximum speed
 	public void setMaxSpeed(int maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	} 
-	
+	//gets lives
 	public int getLives() {
 		return lives;
 	}
 
-
+	//sets lives
 	public void setLives(int lives) {
 		this.lives = lives;
 	}
@@ -86,9 +89,11 @@ public class Ant extends Moveable{
 	
 	//steer left or right
 	public void steer(char c) {
+		//if l steer left
 		if (c=='l') {
-			turnAntLeft();
+			steerAntLeft();
 		}
+		//if r steer right
 		if(c=='r') {
 			steerAntRight(); 
 		}
@@ -96,31 +101,14 @@ public class Ant extends Moveable{
 	}
 	//Steer ant right
 	public void steerAntRight() { 
-		int current=this.getHeading(); 
-		if(current==0) {
-			current=current+5; 
-			this.setHeading(current);
-			if(this.getHeading()==0) {
-				this.setHeading(current); 
-				
-			}else {
-				this.setHeading(this.getHeading()+current);
-			}
-		}
- }
+		int current=this.getHeading();  
+		this.setHeading(current+5);
+	}
+ 
 	//steer ant left
-	public void turnAntLeft() {
-		int current=this.getHeading(); 
-		if(current==0) {
-			current=current-5; 
-			this.setHeading(current);
-			if(this.getHeading()==0) {
-				this.setHeading(current); 
-				
-			}else {
-				this.setHeading(this.getHeading()+current);
-			}
-		}
+	public void steerAntLeft() {
+		int current=this.getHeading();
+		this.setHeading(current-5);
 		
 	}
 
