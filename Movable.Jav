@@ -1,30 +1,69 @@
 package com.mycompany.a1;
 
-import java.util.Random; 
-import com.codename1.charts.util.ColorUtil; 
+import com.codename1.charts.models.Point;
 
-public class Spider extends Moveable{
-	public Spider() {
-		super(ColorUtil.rgb(0,0,0));
-		final int MINIMUM_SIZE=10;
-		final int MAXIMUM_SIZE=50; 
-		super.setHeading(rndm.nextInt(360));
-		super.setSpeed(rndm.nextInt(10)); 
-		super.setSize(new Random().nextInt(MAXIMUM_SIZE-MINIMUM_SIZE)+MINIMUM_SIZE); 
-	}
-	//cannot set size later
-	public void setSize(int size) {}; 
-	//can set color later
-	public void setColor(int color) {};
-	//moving the spider the 5 degrees 
-	public void spiderMove() {
-		this.setHeading(super.getHeading()+rndm.nextInt(5)); 
-	}
-	//overriden to string 
-	public String toString() {
-		String parentString=super.toString(); 
-		String spiderString=" Size= "+ getSize(); 
-		String displayString ="Spider:"+parentString+spiderString; 
-		return displayString; 
-	}
+public class Moveable extends GameObject{
+		//attibutes 
+		private int speed;
+		private int heading;
+
+		public Moveable (int color) {
+			super(color); 
+		}
+
+		public Moveable (int color,int size) {
+			super(color,size); 
+		}
+		//the move for a moveable Object
+		public void move() { 
+			Point oldLocation;//old location before move
+			Point newLocation;//new location after
+			float angle;//Theta
+			float deltaX;
+			float deltaY;
+			//grabbing location of object 
+			oldLocation =getLocation(); 
+			//instantiating new location Point
+			newLocation = new Point();
+
+			//need a new angle due to the new baring
+			angle = 90-getHeading(); 
+			deltaX = 0;
+			deltaY = 0; 
+			//casting to floats 
+			deltaX=(float) (Math.cos(Math.toRadians(angle))*getSpeed()); 
+			deltaY=(float) (Math.sin(Math.toRadians(angle))*getSpeed()); 
+			
+			newLocation.setX(deltaX+oldLocation.getX());
+			newLocation.setY(deltaY+oldLocation.getY());
+			
+			this.setLocation(newLocation);
+			
+		
+		
+		
+		}
+
+			//getters and setters 
+			public int getSpeed() {
+				return this.speed; 
+			}
+			public int getHeading() {
+				return this.heading;
+			}
+
+		public void setSpeed(int speed) {
+			this.speed=this.speed+speed;
+		}
+
+		public void setHeading(int heading) {
+			this.heading=heading; 
+		}
+		//overriden toString()
+		public String toString() {
+			String parentString =super.toString(); 
+			String s= " Speed = "+speed+" Heading= "+heading;
+			String displayString=parentString+s;
+			return displayString; 
+		}
 }
