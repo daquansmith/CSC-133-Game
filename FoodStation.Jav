@@ -5,28 +5,28 @@ import com.codename1.charts.util.ColorUtil;
 
 public class FoodStation extends Fixed{
 	private int capacity;
-	private int size=rndm.nextInt(50)+10;
-	
+	private int size=rndm.nextInt(50)+10;//using this for a random number 
+	//default food station constructor
 	public FoodStation () {
 		super(ColorUtil.rgb(0, 255, 0));
 		super.setSize(size);
-		this.capacity=this.size; 
+		this.capacity=this.size; //size proportionate to capacity 
 		
 	}
-		
+	//getting capacity of food station 
 	public int getCapacity() {
 		return capacity;
 	}
-
+	//setting capacity of the food station 
 	public void setCapacity() {
 		this.capacity = getSize();
 	} 
-	
+	//setting capacity after it has been collided with ant 
 	public void setCapacity(int food) {
 		this.capacity=food; 
 		
 	}
-	
+	//overriden to string for output
 	public String toString() {
 		String parentString=super.toString(); 
 		String foodStationString=" capacity: "+capacity; 
