@@ -7,13 +7,13 @@ import com.codename1.ui.events.ActionEvent;
 import java.lang.String;
 public class Game extends Form{
 	private GameWorld gw; 
-	
+	private char key; //used to tell whether to quit the game or not
 	public Game() {
 		gw =new GameWorld(); 
 		gw.init();
 		play(); 
 	}
-
+    //Playing the Game 
 	private void play() {
 		Label myLabel=new Label("Enter a Command:");
 		this.addComponent(myLabel);
@@ -29,20 +29,23 @@ public class Game extends Form{
 				myTextField.clear();
 					if(sCommand.length() != 0)
 						switch (sCommand.charAt(0)) {
-							
+							//accelerate
 							case 'a':
 								gw.accelerateSpeed(); 
 								break;
+							//brake
 							case 'b':
 								gw.decreaseSpeed();
 								break;
+							//steer left
 							case 'l':
 								gw.turnAntLeft(); 
 								break; 
+							//steer right	
 							case 'r':
 								gw.turnAntRight(); 
 								break; 
-							
+							//ints 1-9 for food station 
 							case '1' :
 								gw.collisionFlag(1);
 								break; 	
@@ -70,28 +73,63 @@ public class Game extends Form{
 							case '9':
 								gw.collisionFlag(9);
 								break; 
+							//foos station collision 
 							case 'f':
 								gw.collisionFoodStation();
 								break; 
+							//same location as spider
 							case 'g':
 								gw.spiderCollision(); 
 								break; 
+							//game tick
 							case 't':
 								gw.tick();
-								break; 
+								break;
+							//display the stats
 							case 'd':
 								gw.display();
 								break;
+							//display the map
 							case 'm':
 								gw.map();
 								break;
+							//Exit game? 
+							case 'x':
+								setKey(sCommand.charAt(0)); 
+								System.out.println("Would you like to quit the game?");
+								break;
+							//continue game
+							case 'N':
+							case 'n':
+								if(getKey()=='x') {
+									System.out.println("Continue Game");
+								}else {
+									System.out.println("invalid"); 
+								}
+								break; 
+							//exit
+							case 'Y':
+							case 'y':
+								if(getKey()=='x') {
+									gw.exit(); 
+								}else {
+									System.out.println("Invalid");
+								}
+								break;
+							//invalid input
 							default:
 								System.out.println("\nInput is incorrect"); 
 						}
 			}
 		}
 	    );
-		
-
 }
+	//getters and setters for key
+	public void setKey(char key) {
+		this.key=key; 
+	}
+	
+	public char getKey() {
+		return this.key; 
+	}
 }
