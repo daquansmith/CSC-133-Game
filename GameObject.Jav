@@ -42,27 +42,28 @@ public abstract class GameObject {
 	}
 	
 	//Getters and setters 
+	//getting size 
 	public int getSize() {
 		return size;
 	}
-	
+	//getting color
 	public int getColor() {
 		return color;
 	}
-	
+	//get x for location 
 	public float getX() {
 		return location.getX(); 
 	}
-	
+	//get y for location 
 	public float getY() {
 		return location.getY(); 
 	}
-	
+	//set color of object
 	public void setColor(int color) {
 		this.color=color;
 		
 	}
-	
+	//set size of object
 	public void setSize(int size) {
 		this.size=size;
 	}
@@ -78,7 +79,7 @@ public abstract class GameObject {
 	
 	//ToString object override
 	public String toString() {
-		String displayString="Loc = "+location.getX() +","+ location.getY()+" Color = ["+ColorUtil.red(color) + ","+ColorUtil.green(color)+","+ColorUtil.blue(color)+"]" + " size = "+getSize(); ;
+		String displayString="Loc = "+Math.round((location.getX()*10.0)/10.0) +","+ Math.round((location.getY()*10.0)/10.0)+" Color = ["+ColorUtil.red(color) + ","+ColorUtil.green(color)+","+ColorUtil.blue(color)+"]" + " size = "+getSize(); ;
 		return displayString;
 	}
 	
