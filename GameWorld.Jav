@@ -112,21 +112,28 @@ public class GameWorld {
 	public void collisionFoodStation() {
 		System.out.println("Ant collided with food station"); 
 		for(int i=0;i<listOfObjects.size();i++) {
-			if(listOfObjects.get(i) instanceof Ant) {
+			
+			if(listOfObjects.get(i) instanceof Ant) {//finding ant
+				
 				for(int j=0;j<listOfObjects.size();j++) {
+					//finding food station 
 					if(listOfObjects.get(j) instanceof FoodStation) {
+						//if the ant hasnt gotten here yet 
 						if(((FoodStation)listOfObjects.get(j)).getCapacity()!=0) {
+						
 							int food=((FoodStation)listOfObjects.get(j)).getCapacity(); 
 							((Ant)listOfObjects.get(i)).setFoodLevel(food); 
 							((FoodStation)listOfObjects.get(j)).setCapacity(0); 
 							((FoodStation)listOfObjects.get(j)).setColor(ColorUtil.rgb(0,100,0));
-							addNewFoodStation();
-							foodStationCount++; 	
+							break; 	
 						}
 					}
 				}
 			}
 		}
+		//adding a new foodstation with food
+		addNewFoodStation();
+		foodStationCount++;
 		
 	}
 	//adding a new food station after the last one was hit 
@@ -138,21 +145,25 @@ public class GameWorld {
 	public void collisionFlag(int f) {
 		System.out.println("There was a collision between the Ant and a Flag"); 
 		//checks for all flags and sees whether or not the ant is at the correct flag 
-		for( int i=0;i<listOfObjects.size();i++) {
-			int currLastFlagReached=((Ant) listOfObjects.get(i)).getLastFlagReached(); 
-			currLastFlagReached++;
-			if(currLastFlagReached==f) {
-				System.out.println("Next Flag Reached"); 
-				((Ant) listOfObjects.get(i)).setLastFlagReached(f); 
-			}else {
-				System.out.println("Have already passed this flag or you have yet to reach it");
-			}
-			if(currLastFlagReached==flagCount) {
-				System.out.println("You have reached the last flag and won the game");
-				System.exit(0);
-			}
-		}
 		
+		for( int i=0;i<listOfObjects.size();i++) {
+			//finding ant
+			if(listOfObjects.get(i) instanceof Ant) {
+				int currLastFlagReached=((Ant) listOfObjects.get(i)).getLastFlagReached(); 
+				currLastFlagReached++;
+				if(currLastFlagReached==f) {
+					System.out.println("Next Flag Reached"); 
+					((Ant) listOfObjects.get(i)).setLastFlagReached(f); //setting new flag last flag reached
+				}else {
+					System.out.println("Have already passed this flag or you have yet to reach it");
+				}
+				if(currLastFlagReached==flagCount) {
+					//winning the game
+					System.out.println("You have reached the last flag and won the game");
+					System.exit(0);
+				}
+			}
+		}	
 	}
 	//Ant collides with spider 'g'
 	public void spiderCollision() {
@@ -223,6 +234,7 @@ public class GameWorld {
 	  }
 			//makes all spiders move
 			if(listOfObjects.get(i) instanceof Spider) {
+				((Spider)listOfObjects.get(i)).spiderMove(); 
 				((Spider)listOfObjects.get(i)).move(); 
 			}
 	}
@@ -258,13 +270,9 @@ public class GameWorld {
 	
 	//Asking to end the game
 	public void exit() {
-		
+		System.exit(0); 
 	}
 	
-	//The person did not want to exit the game
-	public void noExit() {
-		
-	}
 	
 
 }
