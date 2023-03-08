@@ -2,33 +2,29 @@ package com.mycompany.a2;
 
 import java.util.ArrayList;
 import java.util.Observable;
-import com.codename1.charts.util.ColorUtil; 
+import com.codename1.charts.util.ColorUtil;
+import com.codename1.charts.models.Point;
 
-public class GameWorld extends Observable {
-	ArrayList<GameObject> listOfObjects; 
+public class GameWorld extends Observable { 
 	//attributes used to make the objects
 	private int clock; 
 	private int lives; 
-	//the count of each object
-	private int antCount; 
-	private int flagCount; 
-	private int foodStationCount; 
-	private int spiderCount; 
-	//Using this variable to end the game
-	private boolean endGame; 
+	private boolean soundOn; 
+	//Creating collection 
+	private GameWorldCollection listOfObjects;
+	private Ant ant; 
 	
 	//Game world cals init to initialize the game world
 	public GameWorld() {}
+	
 	//The initilization of objects
 	public void init() {
-		listOfObjects=new ArrayList<GameObject>(); //holds all objects
+		listOfObjects=new GameWorldCollection(); //holds all objects
 		this.clock=0; //holds game time
-		this.antCount=0;//number of ants
-		this.spiderCount=0;//number of spiders
-		this.flagCount=0;//number of flags
-		this.foodStationCount=0;//number of food stations
-		this.endGame=false;//Holds if the game has ended
+		this.soundOn=false; // Holds boolean value for sound
 		addAllObjects(); //adds all objects for the game
+		this.setChanged();
+		this.notifyObservers(this); //notifying observers of the change 
 	}
 	
 	//Getters and setters for some of the attributes located here
@@ -38,103 +34,138 @@ public class GameWorld extends Observable {
 	
 	//Using this method to add game obejects
 	public void addAllObjects() {
+		float x = 0, y = 0; 
 		int foodStation=3; 
 		int flag=9;
 		int spiders=2; 
+		//singleton pattern use
+		listOfObjects.add(Ant.getAnt());
+		ant=Ant.getAnt(); 
 		
 		for(int i=1;i<=flag;i++) {
 			listOfObjects.add(new Flag(i));
-			flagCount++; 
 		}
 		
 		for(int i=1;i<=foodStation;i++) {
 			listOfObjects.add(new FoodStation()); 
-			foodStationCount++;
 		}
 		
-		for(int i=0;i<spiders;i++) {
+		for(int i=0;i<=spiders;i++) {
 			listOfObjects.add(new Spider()); 
-			spiderCount=0; 
 		}
-		listOfObjects.add(new Ant()); 
-		antCount++; 
+		
+		//Getting location of the first flag
+		IIterator itr=listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext(); 
+			if(temp instanceof Flag) {
+				if(((Flag)temp).getSequenceNumber()==1) {
+					x=((Flag)temp).getX();
+					y=((Flag)temp).getY();
+				}
+			}
+		}
+		
+		//Assigning x and y to Ant
+		IIterator itr2=listOfObjects.getIterator(); 
+		while(itr2.hasNext()) {
+			GameObject temp2=itr2.getNext(); 
+			if(temp2 instanceof Ant) {
+				((Ant)temp2).setLocation(new Point(x,y));
+			}
+		}
+	
 	}
 	
 	//Game Methods
 	
 	//Accelerate 'a'
 	public void accelerateSpeed() {
-		System.out.println("Ant accelarates speed"); 
 		
-		for(int i=0;i<listOfObjects.size();i++) {
-			if(listOfObjects.get(i) instanceof Ant) {
-				((Ant)listOfObjects.get(i)).accelerateSpeed();
-				
+		IIterator itr = listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp =itr.getNext();
+			if(temp instanceof Ant) {
+				((Ant)temp).accelerateSpeed();
 			}
-			
 		}
+		this.setChanged();
+		this.notifyObservers(this); 
 	}
 	
 	//Brake 'b'
 	public void decreaseSpeed() {
-		System.out.println("Ant decreases speed");
 		
-		for(int i=0;i<listOfObjects.size();i++) {
-		   if(listOfObjects.get(i) instanceof Ant) {
-			   ((Ant)listOfObjects.get(i)).decreaseAntSpeed(); 
-		   }
-		}
+		IIterator itr= listOfObjects.getIterator();
+		while(itr.hasNext()) {
+			GameObject temp =itr.getNext();
+			if(temp instanceof Ant) {
+				((Ant)temp).decreaseAntSpeed();
+			}
+	}
+	this.setChanged();
+	this.notifyObservers(this); 
+		
 	}
 	
 	
 	//Turn ant left 'r'
 	public void turnAntRight() {
-		System.out.println("Ant has tured right"); 
-		for(int i=0; i<listOfObjects.size();i++) {
-			if(listOfObjects.get(i) instanceof Ant) {
-				((Ant)listOfObjects.get(i)).steer('r');
+		IIterator itr=listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext(); 
+			if(temp instanceof Ant) {
+				((Ant)temp).steerAntRight();
 			}
 		}
+		this.setChanged();
+		this.notifyObservers(this);
 	}
 	
 	//Turn ant right 'l'
 	public void turnAntLeft() {
-		System.out.println("Ant has tured left"); 
-		for(int i=0; i<listOfObjects.size();i++) {
-			if(listOfObjects.get(i) instanceof Ant) {
-				((Ant)listOfObjects.get(i)).steer('l');
+		IIterator itr=listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext(); 
+			if(temp instanceof Ant) {
+				((Ant)temp).steerAntLeft();
 			}
 		}
+		this.setChanged();
+		this.notifyObservers(this);
 	}
 	
 	//Ant collides with food station 'f'
 	public void collisionFoodStation() {
 		System.out.println("Ant collided with food station"); 
-		for(int i=0;i<listOfObjects.size();i++) {
-			
-			if(listOfObjects.get(i) instanceof Ant) {//finding ant
-				
-				for(int j=0;j<listOfObjects.size();j++) {
-					//finding food station 
-					if(listOfObjects.get(j) instanceof FoodStation) {
-						//if the ant hasnt gotten here yet 
-						if(((FoodStation)listOfObjects.get(j)).getCapacity()!=0) {
-						
-							int food=((FoodStation)listOfObjects.get(j)).getCapacity(); 
-							((Ant)listOfObjects.get(i)).setFoodLevel(food); 
-							((FoodStation)listOfObjects.get(j)).setCapacity(0); 
-							((FoodStation)listOfObjects.get(j)).setColor(ColorUtil.rgb(0,100,0));
-							break; 	
+		IIterator itr=listOfObjects.getIterator(); 
+		
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext(); 
+			if(temp instanceof Ant) {//finding ant
+				IIterator itr2=listOfObjects.getIterator();
+				while(itr2.hasNext()) {
+					GameObject temp2=itr.getNext(); 
+				//finding food station 
+					if( temp2 instanceof FoodStation) {
+						if(((FoodStation)temp2).getCapacity()!=0) {
+							int cap=((FoodStation)temp2).getCapacity(); 
+							((Ant)temp).setFoodLevel(cap+((Ant)temp).getFoodLevel()); 
+							((FoodStation)temp2).setCapacity(0); 
+							((FoodStation)temp2).setColor(ColorUtil.rgb(0,100,0));
+							addNewFoodStation(); 
+							break; 
 						}
 					}
 				}
 			}
 		}
-		//adding a new foodstation with food
-		addNewFoodStation();
-		foodStationCount++;
-		
+		this.setChanged(); 
+		this.notifyObservers(this); 
 	}
+			
+			
+				
 	//adding a new food station after the last one was hit 
 	public void addNewFoodStation(){
 		listOfObjects.add(new FoodStation()); 
@@ -144,44 +175,47 @@ public class GameWorld extends Observable {
 	public void collisionFlag(int f) {
 		System.out.println("There was a collision between the Ant and a Flag"); 
 		//checks for all flags and sees whether or not the ant is at the correct flag 
-		
-		for( int i=0;i<listOfObjects.size();i++) {
-			//finding ant
-			if(listOfObjects.get(i) instanceof Ant) {
-				int currLastFlagReached=((Ant) listOfObjects.get(i)).getLastFlagReached(); 
-				currLastFlagReached++;
-				if(currLastFlagReached==f) {
-					System.out.println("Next Flag Reached"); 
-					((Ant) listOfObjects.get(i)).setLastFlagReached(f); //setting new flag last flag reached
-				}else {
-					System.out.println("Have already passed this flag or you have yet to reach it");
-				}
-				if(currLastFlagReached==flagCount) {
-					//winning the game
-					System.out.println("You have reached the last flag and won the game");
+		IIterator itr= listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext(); 
+			if(temp instanceof Ant) {
+				int last=((Ant)temp).getLastFlagReached(); 
+				last++;
+				if(last==f && f!=9) {
+					System.out.println("The Ant has reached the next Flag");
+					((Ant)temp).setLastFlagReached(f); 	
+				}else if (last==9) {
+					System.out.println("Game Over, You Won!"); 
 					System.exit(0);
+				}else {
+					System.out.println("Have passed or havent reached"); 
 				}
 			}
-		}	
+		}
+		this.setChanged(); 
+		this.notifyObservers(this); 
 	}
+	
 	//Ant collides with spider 'g'
 	public void spiderCollision() {
 		System.out.println("Ant has collided with a Spider"); 
-		for(int i=0;i<listOfObjects.size();i++) {
-			if(listOfObjects.get(i) instanceof Ant) {
-				//check if ant healthlevel is zero
-				if(((Ant) listOfObjects.get(i)).getHealthLevel()==0){
-					System.out.println("Your ant has died"); 
-					//check if the ant still has lives left
-					if(((Ant) listOfObjects.get(i)).getLives()!=0) {
-						//put the ant back at the last flag reached
-						int lastFlag=((Ant)listOfObjects.get(i)).getLastFlagReached(); 
-						for(int k=0;k<listOfObjects.size();k++) {
-							if(listOfObjects.get(k) instanceof Flag) {
-								if(lastFlag== (((Flag)listOfObjects.get(k)).getSequenceNumber())) {
-									float flagX=(((Flag)listOfObjects.get(k)).getX()) ;
-									float flagY=(((Flag)listOfObjects.get(k)).getY()) ;
-									((Ant)listOfObjects.get(i)).antReset(flagX, flagY);
+		IIterator itr= listOfObjects.getIterator(); 
+		
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext(); 
+			if(temp instanceof Ant) {
+				if(((Ant)temp).getHealthLevel()==0) {
+					System.out.println("Your ant is dead."); 
+					if(((Ant)temp).getHealthLevel()!=0) {
+						int tempFlag=((Ant)temp).getLastFlagReached();
+						IIterator itr2=listOfObjects.getIterator();
+						while(itr2.hasNext()) {
+							GameObject temp2=itr2.getNext(); 
+							if(temp2 instanceof Flag) {
+								if(tempFlag== ((Flag)temp2).getSequenceNumber()) {
+									float flagX=((Flag)temp2).getX();
+									float flagY=((Flag)temp2).getY();
+									((Ant)temp).antReset(flagX,flagY); 
 								}
 							}
 						}
@@ -189,12 +223,17 @@ public class GameWorld extends Observable {
 						System.out.println("Game is Over");
 						System.exit(0);
 					}
-				}else {
-					((Ant)listOfObjects.get(i)).setHealthLevel(((Ant)listOfObjects.get(i)).getHealthLevel()-1);
-					((Ant)listOfObjects.get(i)).healthLevelCheck(); 
 				}
+			else {
+				((Ant)temp).healthLoss();
+				((Ant)temp).healthLevelCheck();
+				((Ant)temp).setColor(ColorUtil.rgb((int)(255*0.9)/((Ant)temp).getHealthLevel(),255,0));
 			}
-		} 		
+			}
+		}
+		this.setChanged();
+		this.notifyObservers(this); 
+	
 	}
 	
 	//Clock tick 't'
@@ -202,77 +241,142 @@ public class GameWorld extends Observable {
 		System.out.println("Clock Ticks"); 
 		clock++; //adding to timer
 		
-		for(int i=0;i<listOfObjects.size();i++) {
-			
-			if (listOfObjects.get(i) instanceof Ant) {
-				//checks if the ant food level is 0 or not
-				if(((Ant)listOfObjects.get(i)).getFoodLevel()!=0){
-					//taking away food from ant 
-					((Ant)listOfObjects.get(i)).foodLevelTick();
-					//moving the ant
-					((Ant)listOfObjects.get(i)).move(); 
-					//setting heading for the ant 
-					((Ant)listOfObjects.get(i)).setHeading(0);
-		
-				}else {
-					System.out.println("No food! You have lost a life"); 
-					int lastFlag=((Ant)listOfObjects.get(i)).getLastFlagReached(); 
+		IIterator itr=listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext(); 
+			if(temp instanceof Ant) {
+				if(((Ant)temp).getFoodLevel()!=0) {
+					((Ant)temp).move(); 
+					((Ant)temp).setHeading(0);
+					((Ant)temp).foodLevelTick();
 					
-						for(int k=0;k<listOfObjects.size();k++) {
-							if(listOfObjects.get(i) instanceof Flag) {
-								//Finds the last flag the ant has reached and moves player there 
-								if(lastFlag==((Flag) listOfObjects.get(i)).getSequenceNumber()) {
-									float flagX= ((Flag)listOfObjects.get(i)).getX();
-									float flagY= ((Flag)listOfObjects.get(i)).getY();
-									((Ant)listOfObjects.get(i)).antReset(flagX,flagY);
+					IIterator itr2=listOfObjects.getIterator();
+					while(itr2.hasNext()) {
+						GameObject temp2=itr2.getNext(); 
+						if(temp2 instanceof Spider) {
+							((Spider)temp2).spiderMove(); 
+							((Spider)temp2).move();
+						}
 					}
 					
+				}else if(((Ant)temp).getLives()!=0){
+					System.out.println("You have lost 1 life");
+					int tempFlag= ((Ant)temp).getLastFlagReached(); 
+					IIterator itr3=listOfObjects.getIterator(); 
+					
+					while(itr3.hasNext()) {
+						GameObject temp2 =itr3.getNext(); 
+						if(temp2 instanceof Flag) {
+							if(tempFlag== ((Flag)temp2).getSequenceNumber()) {
+								float flagX=((Flag)temp2).getX();
+								float flagY=((Flag)temp2).getY();
+								((Ant)temp).antReset(flagX,flagY); 
+							}
+					 }
+					
 				}
-			 }	
-		 }
-	  }
-			//makes all spiders move
-			if(listOfObjects.get(i) instanceof Spider) {
-				((Spider)listOfObjects.get(i)).spiderMove(); 
-				((Spider)listOfObjects.get(i)).move(); 
+			}else {
+				System.out.println("Game Over"); 
+				System.exit(0); 
 			}
+		}
 	}
+		this.setChanged(); 
+		this.notifyObservers(this); 
 }
 	//Display the game stats 'd'
 	public void display() {
 		System.out.println("Displaying all game stats"); 
-		//displays all of the ant stats (health level, food level, last flag reached etc...)
-		for (int i=0;i<listOfObjects.size();i++) {
-			if (listOfObjects.get(i) instanceof Ant) {
-				int lives=((Ant) listOfObjects.get(i)).getLives(); 
-				int time=getTime(); 
-				int lastFlagReached= ((Ant) listOfObjects.get(i)).getLastFlagReached(); 
-				int foodLevel= ((Ant)listOfObjects.get(i)).getFoodLevel(); 
-				int healthLevel=((Ant)listOfObjects.get(i)).getHealthLevel();
-				System.out.println("Number of Lives: "+lives);
-				System.out.println("Current time: "+time); 
-				System.out.println("Last Flag Reached: "+lastFlagReached); 
-				System.out.println("Current Food Level: "+foodLevel);
-				System.out.println("Current Health Level: " +healthLevel); 
+		
+		IIterator itr=listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext();
+			if(temp instanceof Ant) {
+				int lives=((Ant)temp).getLives(); 
+				int clock=getTime(); 
+				int lastFlag= ((Ant)temp).getLastFlagReached();
+				int currentFoodLevel= ((Ant)temp).getFoodLevel();
+				int currentHealth= ((Ant)temp).getHealthLevel();
+				System.out.println("Lives left: "+lives);
+				System.out.println("The time that has elapsed is:  "+clock);
+				System.out.println("Last Flag reacged: "+lastFlag);
+				System.out.println("Current food level: "+currentFoodLevel);
+				System.out.println("Current Health: "+currentHealth);
 				
 			}
 		}
+		
 	}
 	
 	//display the map of the objects in the game 'm'
 	public void map() {
 		System.out.println("Your Game: ");
-		for(int i=0;i<listOfObjects.size();i++) {
-			System.out.println(listOfObjects.get(i).toString());
+		IIterator iter=listOfObjects.getIterator(); 
+		while(iter.hasNext()) {
+			System.out.println(((GameObject)iter.getNext()).toString());
+			
 		}
 	}
 	
-	//Asking to end the game
-	public void exit() {
-		System.exit(0); 
+	//Ending the game and getting stats for scoreview
+	
+	//returning the list of objects 
+	public GameWorldCollection getCollection() {
+		return listOfObjects; 
+		
 	}
 	
+	//getting the ants lives 
+	public int getLife() { 
+		IIterator itr =listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject object=(GameObject)itr.getNext(); 
+			if(object instanceof Ant) {
+				return((Ant)object).getLives(); 
+			}
+		}
+		return 0;
+	}
 	
+	//getting the ants foodLevel 
+	public int getFoodLevel() { 
+		IIterator itr =listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject object=(GameObject)itr.getNext(); 
+			if(object instanceof Ant) {
+				return((Ant)object).getFoodLevel(); 
+			}
+		}
+		return 0;
+	}
+	
+	//getting the ants HealthLevel 
+	public int getHealthLevel() { 
+		IIterator itr =listOfObjects.getIterator(); 
+		while(itr.hasNext()) {
+			GameObject object=(GameObject)itr.getNext(); 
+			if(object instanceof Ant) {
+				return((Ant)object).getHealthLevel(); 
+			}
+		}
+		return 0;
+	}
+	//getting the ants lastFlagReached 
+		public int getLastFlagReacged() { 
+			IIterator itr =listOfObjects.getIterator(); 
+			while(itr.hasNext()) {
+				GameObject object=(GameObject)itr.getNext(); 
+				if(object instanceof Ant) {
+					return((Ant)object).getLastFlagReached(); 
+				}
+			}
+			return 0;
+		}
+		
+		//Closing game
+		public void exit() {
+			System.exit(0);
+		}
+
 
 }
-
