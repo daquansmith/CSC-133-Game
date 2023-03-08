@@ -117,6 +117,7 @@ public class ScoreView extends Container implements Observer{
 		}else {
 			this.soundValueLabel.setText("OFF"); 
 		}
+		this.repaint(); 
 		
 		
 	}
