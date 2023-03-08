@@ -2,13 +2,61 @@ package com.mycompany.a2;
 
 import java.util.Observable;
 import java.util.Observer;
+import com.codename1.ui.plaf.Border; 
+import com.codename1.charts.util.ColorUtil;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.Container;
+import com.codename1.ui.TextArea;
+
 
 public class MapView extends Container implements Observer {
+	private GameWorld gw; 
+	private static int height;
+	private static int width; 
+	private TextArea gameText;
+	
+	public MapView() {
+		this.getAllStyles().setBorder(Border.createLineBorder(10,ColorUtil.rgb(255, 0, 0)));
+		this.setLayout(new BorderLayout());
+		gameText=new TextArea(); 
+		gameText.getAllStyles().setBgTransparency(0);
+		gameText.setEditable(false);
+		MapView.height=this.getHeight(); 
+		MapView.width=this.getWidth(); 
+		this.setWidth(1000); 
+		this.setHeight(1000);
+		this.add(BorderLayout.NORTH,gameText); 
+	}
+	
+	public void setMapHeight(int height) {
+		MapView.height=height; 
 
-	@Override
+	}
+	
+	public void setMapWidth(int width) {
+		MapView.width=width; 
+
+	}
+	
+	public int getMapHeight() {
+		return height; 
+
+	}
+	
+	public int getMapWidth() {
+		return width; 
+
+	}
+	
 	public void update(Observable observable, Object data) {
-		// TODO Auto-generated method stub
+		gw=(GameWorld) data;
+		IIterator itr= gw.getCollection().getIterator(); 
+		String display=""; 
+		while(itr.hasNext()) {
+			display=display+itr.getNext().toString()+"\n";
+		}
+		gameText.setText(display);
+		this.repaint();
 		
 	}
 
