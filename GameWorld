@@ -332,7 +332,7 @@ public class GameWorld extends Observable {
 		while(itr.hasNext()) {
 			GameObject object=(GameObject)itr.getNext(); 
 			if(object instanceof Ant) {
-				return((Ant)object).getLives(); 
+				return ((Ant)object).getLives(); 
 			}
 		}
 		return 0;
@@ -376,6 +376,15 @@ public class GameWorld extends Observable {
 		//Closing game
 		public void exit() {
 			System.exit(0);
+		}
+		
+		public void setSound(boolean sound) {
+			this.soundOn=sound; 
+		}
+
+		public boolean getSound() {
+			// TODO Auto-generated method stub
+			return soundOn;
 		}
 
 
