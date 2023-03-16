@@ -1,9 +1,15 @@
-package com.mycompany.a2;
-
+import com.codename1.charts.util.ColorUtil;
+import com.codename1.ui.Button;
+import com.codename1.ui.CheckBox;
 import com.codename1.ui.Form;
 import com.codename1.ui.events.ActionListener;
+import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Border;
 import com.codename1.ui.Label;
+import com.codename1.ui.Container;
 import com.codename1.ui.TextField;
+import com.codename1.ui.Toolbar;
 import com.codename1.ui.events.ActionEvent;
 import java.lang.String;
 import java.util.Observable;
@@ -12,137 +18,196 @@ public class Game extends Form {
 	private GameWorld gw;
 	private MapView mv;//creating mapview observer
 	private ScoreView sv;//creating scoreview observer
-	private char key;//used to tell whether to quit the game or not
+
 	
 	
 	public Game() {
+		this.setLayout(new BorderLayout());
 		gw =new GameWorld(); 
 		mv = new MapView(); 
 		sv = new ScoreView(); 
 		
 		gw.addObserver(mv); 
 		gw.addObserver(sv); 
+		
+		this.add(BorderLayout.NORTH,sv); 
+		this.add(BorderLayout.CENTER,mv); 
+		
+		//Command Keys
+		setUpMenu(); 
+		setUpCommandLeft(); 
+		setUpCommandRight();
+		setUpCommandBottom(); 
+		
 		gw.init();
-		play(); 
+		this.show(); 
+		
+		 
 	}
-    //Playing the Game 
-	private void play() {
-		Label myLabel=new Label("Enter a Command:");
-		this.addComponent(myLabel);
-		final TextField myTextField=new TextField();
-		this.addComponent(myTextField);
-		this.show();
+
+
+	private void setUpMenu() {
+		Toolbar tools= new Toolbar(); 
+		this.setToolbar(tools); 
+		tools.setTitle("Start to Finish Game");
 		
 		
-		myTextField.addActionListener(new ActionListener(){
-			
-			public void actionPerformed(ActionEvent evt) {
-				String sCommand=myTextField.getText().toString();
-				myTextField.clear();
-					if(sCommand.length() != 0)
-						switch (sCommand.charAt(0)) {
-							//accelerate
-							case 'a':
-								gw.accelerateSpeed(); 
-								break;
-							//brake
-							case 'b':
-								gw.decreaseSpeed();
-								break;
-							//steer left
-							case 'l':
-								gw.turnAntLeft(); 
-								break; 
-							//steer right	
-							case 'r':
-								gw.turnAntRight(); 
-								break; 
-							//ints 1-9 for food station 
-							case '1' :
-								gw.collisionFlag(1);
-								break; 	
-							case '2':
-								gw.collisionFlag(2); 
-								break;
-							case '3':
-								gw.collisionFlag(3);
-								break; 
-							case '4':
-								gw.collisionFlag(4);
-								break; 
-							case '5':
-								gw.collisionFlag(5);
-								break; 
-							case '6':
-								gw.collisionFlag(6);
-								break; 
-							case '7':
-								gw.collisionFlag(7);
-								break; 
-							case '8':
-								gw.collisionFlag(8);
-								break; 
-							case '9':
-								gw.collisionFlag(9);
-								break; 
-							//foos station collision 
-							case 'f':
-								gw.collisionFoodStation();
-								break; 
-							//same location as spider
-							case 'g':
-								gw.spiderCollision(); 
-								break; 
-							//game tick
-							case 't':
-								gw.tick();
-								break;
-							//display the stats
-							case 'd':
-								gw.display();
-								break;
-							//display the map
-							case 'm':
-								gw.map();
-								break;
-							//Exit game? 
-							case 'x':
-								setKey(sCommand.charAt(0)); 
-								System.out.println("Would you like to quit the game?");
-								break;
-							//continue game
-							case 'N':
-							case 'n':
-								if(getKey()=='x') {
-									System.out.println("Continue Game");
-								}else {
-									System.out.println("invalid"); 
-								}
-								break; 
-							//exit
-							case 'Y':
-							case 'y':
-								if(getKey()=='x') {
-									gw.exit(); 
-								}else {
-									System.out.println("Invalid");
-								}
-								break;
-							//invalid input
-							default:
-								System.out.println("\nInput is incorrect"); 
-						}
-			}
-		}
-	    );
-}
-	//getters and setters for key
-	public void setKey(char key) {
-		this.key=key; 
+		//Help Command
+		HelpCommand hcmd=new HelpCommand(); 
+		tools.addCommandToRightBar(hcmd); 
+		
+		//Exit Command
+		ExitCommand ecmd=new ExitCommand(); 
+		tools.addCommandToSideMenu(ecmd); 
+		
+		//About
+		AboutCommand acmd=new AboutCommand();
+		tools.addCommandToSideMenu(acmd);
+		
+		//Acceleration Command
+		AccelerateCommand accmd= new AccelerateCommand(gw); 
+		tools.addCommandToSideMenu(accmd); 
+		
+		//Sound 
+		CheckBox chkBoxCmd= new CheckBox(); 
+		chkBoxCmd.getAllStyles().setBgTransparency(255);
+		chkBoxCmd.getAllStyles().setBgColor(ColorUtil.LTGRAY);
+		chkBoxCmd.setFocusable(false);
+		SoundCommand sound=new SoundCommand(gw); 
+		chkBoxCmd.setCommand(sound);
+		tools.addComponentToSideMenu(chkBoxCmd);
+		
+	}
+
+	private void setUpCommandRight() {
+
+		Container rightContainer = new Container((new BoxLayout(BoxLayout.Y_AXIS)));
+		rightContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
+		// Brake button
+		
+		BrakeCommand bkcmd=new BrakeCommand(gw); 
+		Button btnBrake= new Button(bkcmd); 
+		btnBrake=topSide(btnBrake); 
+		rightContainer.add(btnBrake); 
+		addKeyListener('b', bkcmd); 
+		
+		//Right Turn Button
+		TurnRightCommand rtcmd=new TurnRightCommand(gw); 
+		Button btnRight=new Button(rtcmd); 
+		btnRight= applyMakeup(btnRight); 
+		addKeyListener('r',rtcmd); 
+		this.add(BorderLayout.EAST,rightContainer); 
+		
+		
+	}
+	private void setUpCommandLeft() {
+		Container leftContainer=new Container((new BoxLayout(BoxLayout.Y_AXIS)));
+		leftContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
+		
+		//Accelerate Button
+		AccelerateCommand accmd=new AccelerateCommand(gw); 
+		Button btnAccelerate = new Button(accmd); 
+		btnAccelerate=topSide(btnAccelerate); 
+		leftContainer.add(btnAccelerate);
+		addKeyListener('a',accmd); 
+		
+		//Turn Left Button 
+		TurnLeftCommand lftcmd = new TurnLeftCommand(gw); 
+		Button btnLeft= new Button(lftcmd); 
+		btnLeft= applyMakeup(btnLeft); 
+		leftContainer.add(btnLeft); 
+		addKeyListener('l',lftcmd); 
+		this.add(BorderLayout.WEST,leftContainer); 
+		
+		
+		
 	}
 	
-	public char getKey() {
-		return this.key; 
+	private void setUpCommandBottom() { 
+		Container bottomContainer= new Container((new BoxLayout(BoxLayout.X_AXIS)));
+		bottomContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
+		
+		//Collide with spider Button
+		
+		CollideWithSpiderCommand cs= new CollideWithSpiderCommand(gw); 
+		Button btnCs=new Button(cs); 
+		btnCs.getAllStyles().setMarginLeft(350); 
+		btnCs=bothSide(btnCs); 
+		bottomContainer.add(btnCs);
+		
+		//Collide with Flag 
+		
+		CollideFlagCommand cFlag= new CollideFlagCommand(gw); 
+		Button btnFlag=new Button(cFlag); 
+		btnFlag =bothSide(btnFlag); 
+		bottomContainer.add(btnFlag); 
+		
+		//Collide with food Station 
+		CollideWithFoodStationCommand cFood= new CollideWithFoodStationCommand(gw); 
+		Button btnFood= new Button(cFood); 
+		btnFood=bothSide(btnFood); 
+		bottomContainer.add(btnFood); 
+		addKeyListener('f',cFood); 
+		
+		//Tick Button
+		TickCommand tick=new TickCommand(gw); 
+		Button btnTick=new Button(tick); 
+		btnTick=bothSide(btnTick); 
+		bottomContainer.add(btnTick); 
+		addKeyListener('t',tick); 
+		
+		this.add(BorderLayout.SOUTH,bottomContainer); 
+		
+		
+		
+		
+		
 	}
-}
 
+
+
+	
+	
+
+
+	private Button bothSide(Button obj) {
+		obj.getAllStyles().setBgTransparency(255); 
+		obj.getUnselectedStyle().setBgColor(ColorUtil.BLUE); 
+		obj.getAllStyles().setFgColor(ColorUtil.rgb(255, 255, 255)); 
+		obj.getAllStyles().setBorder(Border.createLineBorder(2,ColorUtil.rgb(0,0,0)));
+		obj.getAllStyles().setPadding(TOP, 5);
+		obj.getAllStyles().setPadding(BOTTOM, 5);
+		return obj; 
+	}
+
+
+	private Button applyMakeup(Button obj) {
+		obj.getAllStyles().setBgTransparency(255); 
+		obj.getUnselectedStyle().setBgColor(ColorUtil.BLUE); 
+		obj.getAllStyles().setFgColor(ColorUtil.rgb(255, 255, 255)); 
+		obj.getAllStyles().setBorder(Border.createLineBorder(2,ColorUtil.rgb(0,0,0)));
+		obj.getAllStyles().setPadding(TOP, 5);
+		obj.getAllStyles().setPadding(BOTTOM, 5);
+		return obj; 
+		
+	}
+
+
+
+	private Button topSide(Button obj) {
+		obj.getAllStyles().setBgTransparency(255); 
+		obj.getUnselectedStyle().setBgColor(ColorUtil.BLUE); 
+		obj.getAllStyles().setFgColor(ColorUtil.rgb(255, 255, 255)); 
+		obj.getAllStyles().setBorder(Border.createLineBorder(2,ColorUtil.rgb(0,0,0)));
+		obj.getAllStyles().setMarginTop( 100);
+		obj.getAllStyles().setPadding(TOP, 5);
+		obj.getAllStyles().setPadding(BOTTOM, 5);
+		return obj; 
+	}
+
+
+
+	
+    
+						
+}
