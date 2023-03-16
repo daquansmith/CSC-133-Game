@@ -8,7 +8,7 @@ import com.codename1.ui.events.ActionEvent;
 public class CollideFlagCommand extends Command {
 	private GameWorld gw; 
 	
-	public CollideFlagCommand() { 
+	public CollideFlagCommand(GameWorld gw) { 
 		super("Collide with Flag"); 
 		this.gw=gw; 
 	}
