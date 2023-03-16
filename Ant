@@ -1,4 +1,5 @@
 package com.mycompany.a2;
+
 import com.codename1.charts.util.ColorUtil;
 import com.codename1.charts.models.Point; 
 public class Ant extends Moveable{
@@ -9,9 +10,10 @@ public class Ant extends Moveable{
 	private int maxHealth; 
 	private int lastFlagReached;
 	private int lives; 
+	private static Ant ant; 
 	
 	
-	public Ant() {
+	private Ant() {
 		super(ColorUtil.rgb(255, 0, 0), 20);//making ant red and size 20
 		this.foodLevel=(30); //starts out at 30 food level 
 		this.lastFlagReached=1;//first flag needed to be reached
@@ -22,6 +24,16 @@ public class Ant extends Moveable{
 		this.lives=3; // starts with three lives
 		
 	}
+	//This is for singleton pattern
+	
+	public static Ant getAnt() {
+		if (ant==null) {
+			ant= new Ant(); 
+			
+		}
+		return ant;
+	}
+	
 	//get max health
 	public int maxHealth() {
 		return this.maxHealth; 
