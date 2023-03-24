@@ -2,7 +2,7 @@ package com.mycompany.a2;
 
 import java.util.Random; 
 import com.codename1.charts.util.ColorUtil; 
-
+//Spider object class
 public class Spider extends Moveable{
 	public Spider() {
 		super(ColorUtil.rgb(0,0,0));
@@ -16,11 +16,11 @@ public class Spider extends Moveable{
 	public void setSize(int size) {}; 
 	
 	public void setColor(int color) {};
-	
+	//different movement of spider
 	public void spiderMove() {
 		this.setHeading(super.getHeading()+rndm.nextInt(5)); 
 	}
-	
+	//spider to string
 	public String toString() {
 		String parentString=super.toString(); 
 		String spiderString=" Size= "+ getSize(); 
@@ -28,5 +28,3 @@ public class Spider extends Moveable{
 		return displayString; 
 	}
 }
-
-
