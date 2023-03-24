@@ -1,3 +1,5 @@
+package com.mycompany.a2;
+
 import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.Button;
 import com.codename1.ui.CheckBox;
@@ -20,7 +22,7 @@ public class Game extends Form {
 	private ScoreView sv;//creating scoreview observer
 
 	
-	
+	//new game method with observers and desired layout manager
 	public Game() {
 		this.setLayout(new BorderLayout());
 		gw =new GameWorld(); 
@@ -75,6 +77,7 @@ public class Game extends Form {
 		chkBoxCmd.setFocusable(false);
 		SoundCommand sound=new SoundCommand(gw); 
 		chkBoxCmd.setCommand(sound);
+		//adding all to the sidemenu 
 		tools.addComponentToSideMenu(chkBoxCmd);
 		
 	}
@@ -83,8 +86,8 @@ public class Game extends Form {
 
 		Container rightContainer = new Container((new BoxLayout(BoxLayout.Y_AXIS)));
 		rightContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
-		// Brake button
 		
+		// Brake button
 		BrakeCommand bkcmd=new BrakeCommand(gw); 
 		Button btnBrake= new Button(bkcmd); 
 		btnBrake=topSide(btnBrake); 
@@ -95,6 +98,7 @@ public class Game extends Form {
 		TurnRightCommand rtcmd=new TurnRightCommand(gw); 
 		Button btnRight=new Button(rtcmd); 
 		btnRight= applyMakeup(btnRight); 
+		rightContainer.add(btnRight); 
 		addKeyListener('r',rtcmd); 
 		this.add(BorderLayout.EAST,rightContainer); 
 		
@@ -117,6 +121,7 @@ public class Game extends Form {
 		btnLeft= applyMakeup(btnLeft); 
 		leftContainer.add(btnLeft); 
 		addKeyListener('l',lftcmd); 
+		// adding all command buttons to the west container
 		this.add(BorderLayout.WEST,leftContainer); 
 		
 		
@@ -155,21 +160,12 @@ public class Game extends Form {
 		btnTick=bothSide(btnTick); 
 		bottomContainer.add(btnTick); 
 		addKeyListener('t',tick); 
-		
+		//adding all commmand buttons to south container
 		this.add(BorderLayout.SOUTH,bottomContainer); 
-		
-		
-		
-		
 		
 	}
 
-
-
-	
-	
-
-
+	//Formatting all of the side buttons 
 	private Button bothSide(Button obj) {
 		obj.getAllStyles().setBgTransparency(255); 
 		obj.getUnselectedStyle().setBgColor(ColorUtil.BLUE); 
@@ -180,7 +176,7 @@ public class Game extends Form {
 		return obj; 
 	}
 
-
+	//Applying makeup to specific buttons 
 	private Button applyMakeup(Button obj) {
 		obj.getAllStyles().setBgTransparency(255); 
 		obj.getUnselectedStyle().setBgColor(ColorUtil.BLUE); 
@@ -193,7 +189,7 @@ public class Game extends Form {
 	}
 
 
-
+	//Formatting the top buttons 
 	private Button topSide(Button obj) {
 		obj.getAllStyles().setBgTransparency(255); 
 		obj.getUnselectedStyle().setBgColor(ColorUtil.BLUE); 
