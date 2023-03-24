@@ -1,11 +1,10 @@
 package com.mycompany.a2;
 
-package com.mycompany.a2;
-
 import com.codename1.ui.Command;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.events.ActionEvent;
 
+//This command helps when it comes to displaying about the program
 public class AboutCommand extends Command {
 	
 	public AboutCommand() {
