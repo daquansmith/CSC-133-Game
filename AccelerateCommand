@@ -4,12 +4,12 @@ import com.codename1.ui.events.ActionEvent;
 
 public class AccelerateCommand extends Command{
 	private GameWorld gw; 
-	
+	//Command to accelerate the ant
 	public AccelerateCommand(GameWorld gw) { 
 		super("Accelerate"); 
 		this.gw=gw; 
 	}
-	
+	//Displays this output on press of button 
 	public void actionPerformed(ActionEvent e) { 
 		gw.accelerateSpeed(); 
 		System.out.println("Accelerate Speed Invoked");
