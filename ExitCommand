@@ -3,12 +3,12 @@ import com.codename1.ui.Dialog;
 import com.codename1.ui.events.ActionEvent;
 
 public class ExitCommand extends Command {
-	
+	//Supposed to exit the game
 	public ExitCommand() {
 		super("Exit"); 
 	}
 	
-	//Displaying about information 
+	//Displaying exit information 
 	public void actionPerformed(ActionEvent e) { 
 		Command cOk =new Command("Yes"); 
 		Command cCancel=new Command("Cancel"); 
