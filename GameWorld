@@ -50,7 +50,7 @@ public class GameWorld extends Observable {
 			listOfObjects.add(new FoodStation()); 
 		}
 		
-		for(int i=0;i<=spiders;i++) {
+		for(int i=1;i<=spiders;i++) {
 			listOfObjects.add(new Spider()); 
 		}
 		
