@@ -8,7 +8,7 @@ import com.codename1.ui.Container;
 import com.codename1.ui.Label; 
 import com.codename1.ui.layouts.BoxLayout; 
 
-
+//This class is an observer of the game class
 public class ScoreView extends Container implements Observer{
 	private GameWorld gw; 
 	private Label livesLabel; 
@@ -18,7 +18,7 @@ public class ScoreView extends Container implements Observer{
 	private Label healthLevelLabel; 
 	private Label soundValueLabel; 
 	
-	
+	//These are all labels for the information that is observerd
 	public ScoreView() {
 		setLayout(); 
 		setClockLabel(); 
@@ -28,11 +28,11 @@ public class ScoreView extends Container implements Observer{
 		setHealthLevelLabel(); 
 		setSoundValueLabel(); 
 	}
-
+	//Setting layout for this observer 
 	public void setLayout() {
 		this.setLayout(new BoxLayout(BoxLayout.X_AXIS));
 	}
-	
+	//This is adding an label for lives
 	public void setLivesLabel() {
 		Label lifeLabel=new Label("Lives left: ");
 		lifeLabel.getAllStyles().setFgColor(ColorUtil.rgb(0, 0, 255));
@@ -44,7 +44,7 @@ public class ScoreView extends Container implements Observer{
 		this.add(livesLabel); 
 	}
 	
-	
+	//adding a label for clock
 	public void setClockLabel() {
 		Label timeLabel=new Label("Time: ");
 		timeLabel.getAllStyles().setFgColor(ColorUtil.rgb(0, 0, 255));
@@ -55,7 +55,7 @@ public class ScoreView extends Container implements Observer{
 		this.add(timeLabel);
 		this.add(clockLabel); 
 	}
-	
+	//adding a label for food level
 	public void setFoodLevelLabel() {
 		Label foodLabel=new Label("Ant Food Level: ");
 		foodLabel.getAllStyles().setFgColor(ColorUtil.rgb(0, 0, 255));
@@ -66,7 +66,7 @@ public class ScoreView extends Container implements Observer{
 		this.add(foodLabel);
 		this.add(foodLevelLabel); 
 	}
-	
+	//adding a label for health level
 	public void setHealthLevelLabel() {
 		Label healthLabel=new Label("Ant Health Level: ");
 		healthLabel.getAllStyles().setFgColor(ColorUtil.rgb(0, 0, 255));
@@ -78,7 +78,7 @@ public class ScoreView extends Container implements Observer{
 		this.add(healthLevelLabel); 
 	}
 	
-	
+	//adding a label for last flag reached
 	public void setLastFlagReachedLabel() {
 		Label lastFlagLabel=new Label("Last Flag Reached: ");
 		lastFlagLabel.getAllStyles().setFgColor(ColorUtil.rgb(0, 0, 255));
@@ -89,12 +89,12 @@ public class ScoreView extends Container implements Observer{
 		this.add(lastFlagLabel);
 		this.add(lastFlagReachedLabel); 
 	}
-	
+	//adding sound label 
 	public void setSoundValueLabel() {
-		Label soundLabel=new Label("Last Flag Reached: ");
+		Label soundLabel=new Label("Sound: ");
 		soundLabel.getAllStyles().setFgColor(ColorUtil.rgb(0, 0, 255));
 		soundLabel.getAllStyles().setPadding(1,1,1,1);
-		soundValueLabel=new Label("0"); 
+		soundValueLabel=new Label("OFF"); 
 		soundValueLabel.getAllStyles().setFgColor(ColorUtil.rgb(0, 0, 255));
 		soundValueLabel.getAllStyles().setPadding(RIGHT, 5);
 		this.add(soundLabel);
@@ -102,7 +102,7 @@ public class ScoreView extends Container implements Observer{
 	}
 	
 	
-	
+	//Overriden update in order to get the correct data to be displayed
 	@Override
 	public void update(Observable observable, Object data) {
 		gw=(GameWorld) data; 
@@ -111,6 +111,7 @@ public class ScoreView extends Container implements Observer{
 		this.lastFlagReachedLabel.setText(" "+gw.getLastFlagReacged());
 		this.foodLevelLabel.setText(" "+gw.getFoodLevel());
 		this.healthLevelLabel.setText(" "+gw.getHealthLevel());
+		
 		if(gw.getSound()) {
 			this.soundValueLabel.setText("ON");
 			System.out.println("Sound ON");
