@@ -5,7 +5,7 @@ import com.codename1.ui.events.ActionEvent;
 
 public class CollideWithSpiderCommand extends Command {
 	private GameWorld gw; 
-	
+	// collision with spider command using game world
 	public CollideWithSpiderCommand(GameWorld gw) { 
 		super("Collision with Spider"); 
 		this.gw=gw; 
@@ -17,4 +17,3 @@ public class CollideWithSpiderCommand extends Command {
 	}
 	
 }
-
