@@ -1,0 +1,52 @@
+package com.mycompany.a3;
+
+
+
+import com.codename1.charts.models.Point;
+public abstract class Fixed extends GameObject implements ISelectable{
+		private boolean select; 
+		
+	
+		//calling color
+		public Fixed(int color,GameWorld gw) {
+			super(color,gw);
+		}
+		//constructor to call color and size
+		public Fixed(int color,int size,GameWorld gw) {
+			super(color,size, gw);
+		}
+		//cannot set location of a fixed object
+		public void setLocation(Point location) {
+			
+			if(select) { 
+				super.setLocation(location);
+			}
+		}
+		
+		public void setSelected(boolean n) {
+			select=n; 
+		} 
+		
+		public boolean isSelected() { 
+			return select; 
+		}
+		
+		public boolean contains(Point pPtrRelPoint, Point pCmpPrnt) { 
+			int radius=super.getSize()/2; 
+			int left=(int)Math.round(super.getX()-radius+pCmpPrnt.getX());
+			int right= left+super.getSize(); 
+			int top=(int)Math.round(super.getY()-radius+pCmpPrnt.getY()) ;
+			int bottom= top+super.getSize(); 
+			
+			
+			
+			boolean checkedLR= pPtrRelPoint.getX() > left && pPtrRelPoint.getX() <right; 
+			boolean checkedTB=  pPtrRelPoint.getY() > top && pPtrRelPoint.getY() <bottom;
+			
+			
+			return checkedLR && checkedTB; 
+			
+		}
+			
+} 	
+	
