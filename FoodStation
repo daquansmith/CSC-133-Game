@@ -1,0 +1,63 @@
+package com.mycompany.a3;
+
+
+import java.util.Random;
+
+import com.codename1.charts.models.Point;
+import com.codename1.charts.util.ColorUtil;
+import com.codename1.ui.Graphics;
+
+
+public class FoodStation extends Fixed implements IDrawable {
+	private int capacity;
+	private static GameWorld gw; 
+	private int size=rndm.nextInt(50)+10;//using this for a random number 
+	//default food station constructor
+	public FoodStation (GameWorld gw) {
+		super(ColorUtil.rgb(0, 255, 0),gw);
+		super.setSize(size);
+		this.capacity=this.size; //size proportionate to capacity 
+		this.gw=gw; 
+	}
+	//getting capacity of food station 
+	public int getCapacity() {
+		return capacity;
+	}
+	//setting capacity of the food station 
+	public void setCapacity() {
+		this.capacity = getSize();
+	} 
+	//setting capacity after it has been collided with ant 
+	public void setCapacity(int food) {
+		this.capacity=food; 
+		
+	}
+	//overriden to string for output
+	public String toString() {
+		String parentString=super.toString(); 
+		String foodStationString=" capacity: "+capacity; 
+		String displayString ="Food Station:"+parentString+foodStationString; 
+		return displayString; 
+	}
+	
+	public void handleCollision(GameObject object) { 
+		if(this instanceof FoodStation && object instanceof Ant) { 
+			if(this.getCapacity() !=0) { 
+				int temp=this.getCapacity(); 
+				((Ant) object).setFoodLevel(temp+((Ant)object).getFoodLevel()); 
+				this.setCapacity(0); 
+				this.setColor(ColorUtil.rgb(100, 100, 100));
+				super.getGW().addNewFoodStation(); 
+			}
+		}
+	}
+	
+		
+
+	@Override
+	public void draw(Graphics g, Point pCmpRelPoint) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
