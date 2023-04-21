@@ -1,0 +1,37 @@
+package com.mycompany.a3;
+import java.io.InputStream; 
+
+import com.codename1.ui.Display; 
+import com.codename1.media.MediaManager; 
+import com.codename1.media.Media; 
+
+
+
+public class BgSound implements Runnable{
+
+	private Media m; 
+	
+	public BgSound(String file) { 
+		
+		try {
+			InputStream inputStream =Display.getInstance().getResourceAsStream(getClass(),"/"+file);
+			m=MediaManager.createMedia(inputStream, "audio/wav",this); 
+		}catch(Exception s) { 
+			s.printStackTrace(); 
+			System.out.println("Sound Cannot be Played"); 
+		}	
+	}
+	
+	public void pause() { 
+		m.pause();
+	}
+	
+	public void play() {
+		m.play(); 
+	}
+	
+	public void run() {
+		m.setTime(0);
+		m.play(); 
+	}
+}
