@@ -1,0 +1,205 @@
+package com.mycompany.a3;
+
+import com.codename1.charts.util.ColorUtil;
+import com.codename1.ui.Graphics;
+import com.codename1.charts.models.Point; 
+public class Ant extends Moveable implements IDrawable{
+	private int maxSpeed; 
+	private int foodLevel; 
+	private int foodConsumptionRate;
+	private int healthLevel; 
+	private int maxHealth; 
+	private int lastFlagReached;
+	private int lives; 
+	private static Ant ant; 
+	
+	
+	private Ant(GameWorld gw) {
+		super(ColorUtil.rgb(255, 0, 0), 20,gw);//making ant red and size 20
+		this.foodLevel=(30); //starts out at 30 food level 
+		this.lastFlagReached=1;//first flag needed to be reached
+		this.maxSpeed=50; //max speed to 50
+		this.foodConsumptionRate=2; //consumption rate per tick 
+		this.healthLevel=10;//health level of 10 before losing life
+		this.maxHealth=10; //max health of the ant
+		this.lives=3; // starts with three lives
+		
+	}
+	//This is for singleton pattern
+	
+	public static Ant getAnt(GameWorld gw) {
+		if (ant==null) {
+			ant= new Ant(gw); 
+			
+		}
+		return ant;
+	}
+	
+	//get max health
+	public int maxHealth() {
+		return this.maxHealth; 
+	}
+	//set max health 
+	public void setmaxHealth(int maxHealth) {
+		this.maxHealth=maxHealth; 
+	}
+	//getting food level
+	public int getFoodLevel() {
+		return foodLevel;
+	}
+	//setting food level 
+	public void setFoodLevel(int foodLevel) {
+		this.foodLevel = foodLevel;
+	}
+	//getting food consumption 
+	public int getFoodConsumptionRate() {
+		return foodConsumptionRate;
+	}
+	//setting foos consumption 
+	public void setFoodConsumptionRate(int foodConsumptionRate) {
+		this.foodConsumptionRate = foodConsumptionRate;
+	}
+	//getting last flag reached
+	public int getLastFlagReached() {
+		return lastFlagReached;
+	}
+	//setting last flag reached
+	public void setLastFlagReached(int lastFlagReached) {
+		this.lastFlagReached = lastFlagReached;
+	}
+	//get health level 
+	public int getHealthLevel() {
+		return healthLevel;
+	}
+	//set health level 
+	public void setHealthLevel(int healthLevel) {
+		this.healthLevel = healthLevel;
+	}
+	//get max speeed
+	public int getMaxSpeed() {
+		return maxSpeed;
+	}
+	//set maximum speed
+	public void setMaxSpeed(int maxSpeed) {
+		this.maxSpeed = maxSpeed;
+	} 
+	//gets lives
+	public int getLives() {
+		return lives;
+	}
+
+	//sets lives
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+	//Overrides the to String 
+	public String toString() {
+		String parentString=super.toString(); 
+		String antString=" maxSpeed: "+ getMaxSpeed() +" foodConsumptionRate: "+ getFoodConsumptionRate(); 
+		String displayString ="Ant:"+parentString+antString; 
+		return displayString; 
+	}
+	
+	//steer left or right
+	public void steer(char c) {
+		//if l steer left
+		if (c=='l') {
+			steerAntLeft();
+		}
+		//if r steer right
+		if(c=='r') {
+			steerAntRight(); 
+		}
+		
+	}
+	//Steer ant right
+	public void steerAntRight() { 
+		int current=this.getHeading();  
+		this.setHeading(current+5);
+	}
+ 
+	//steer ant left
+	public void steerAntLeft() {
+		int current=this.getHeading();
+		this.setHeading(current-5);
+		
+	}
+
+
+	//Accelerate speed of ant
+	public void accelerateSpeed() {
+		int currentSpeed= getSpeed(); 
+		if(currentSpeed!=getMaxSpeed() && currentSpeed<maxSpeed) {
+			this.setSpeed(currentSpeed+5);
+		}else {
+			System.out.println("Speed cannot go past max speed"); 
+		}
+	}
+		
+	//Brake or decrease speed of ant
+	public void decreaseAntSpeed() {
+		int currSpeed=getSpeed(); 
+		int negSpeed=currSpeed*-1;
+		if(currSpeed>0) {
+			this.setSpeed(negSpeed);
+		}
+	}
+	
+	//loses health points if makes a collision with a spider
+	public void healthLoss (){
+		healthLevel--; 
+		
+	}
+	//checks the health level of the ant and makes adjustments too lives and maxSpeed if needed
+	public void healthLevelCheck() {
+		if(healthLevel>0 && healthLevel<maxHealth) {
+			double healthLevelPercent=healthLevel/maxHealth; 
+			setMaxSpeed((int)(healthLevelPercent*maxSpeed)); 
+		}
+		
+		if (healthLevel==0) {
+			this.setSpeed(0);
+			lives--; 
+		}
+	}
+		
+	//Taking food level down on every tick 
+	public void foodLevelTick() {
+		this.setFoodLevel(this.getFoodLevel()-this.getFoodConsumptionRate());
+	}
+
+	//Resetting ant after it has ran out of food or lost a life
+	public void antReset(float flagX, float flagY) {
+		this.setLocation(new Point(flagX,flagY)); 
+		this.setHeading(0);
+		this.maxSpeed= 50; 
+		this.foodConsumptionRate=2; 
+		this.foodLevel=20;
+		this.healthLevel=10; 
+		lives--;
+	}
+	
+		
+
+	
+	public void handleCollision(GameObject object) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void draw(Graphics g, Point pCmpRelPoint) {
+		g.setColor(super.getColor());
+		int x = (int)this.getX()+(int)pCmpRelPoint.getX(); 
+		int y= (int)this.getY()+(int)pCmpRelPoint.getY(); 
+		
+		g.fillArc(x, y, 0, 0, 0, 360);
+		
+		double line= Math.toRadians(90-super.getHeading()); 
+		double steerX=((Math.cos(line)*50)+this.getX()+pCmpRelPoint.getX()); 
+		double steerY=((Math.cos(line)*50)+this.getY()+pCmpRelPoint.getY()); 
+		
+		g.setColor(ColorUtil.red(150));
+		
+		
+	}
+} 
