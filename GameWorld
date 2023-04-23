@@ -6,10 +6,20 @@ import com.codename1.charts.util.ColorUtil;
 import com.codename1.charts.models.Point;
 
 public class GameWorld extends Observable { 
+	private static int gameHeight=1000; 
+	private static int gameWidth=1000; 
+	
 	//attributes used to make the objects
 	private int clock; 
 	private int lives; 
-	private boolean soundOn; 
+	private boolean soundOn;
+	private boolean pause; 
+	private boolean position; 
+	
+	private Sound FoodStationSnd; 
+	private Sound lifeSnd; 
+	private Sound flagSnd; 
+	private BgSound bgSnd; 
 	//Creating collection 
 	private GameWorldCollection listOfObjects;
 	private Ant ant; 
@@ -23,6 +33,7 @@ public class GameWorld extends Observable {
 		this.clock=0; //holds game time
 		this.soundOn=false; // Holds boolean value for sound
 		addAllObjects(); //adds all objects for the game
+		pause=false; 
 		this.setChanged();
 		this.notifyObservers(this); //notifying observers of the change 
 	}
@@ -40,19 +51,19 @@ public class GameWorld extends Observable {
 		int flag=9;
 		int spiders=2; 
 		//singleton pattern use
-		listOfObjects.add(Ant.getAnt(gw));
-		ant=Ant.getAnt(gw); 
+		listOfObjects.add(Ant.getAnt(this));
+		ant=Ant.getAnt(this); 
 		
 		for(int i=1;i<=flag;i++) {
 			listOfObjects.add(new Flag(i));
 		}
 		
 		for(int i=1;i<=foodStation;i++) {
-			listOfObjects.add(new FoodStation(gw)); 
+			listOfObjects.add(new FoodStation(this)); 
 		}
 		
 		for(int i=1;i<=spiders;i++) {
-			listOfObjects.add(new Spider()); 
+			listOfObjects.add(new Spider(this)); 
 		}
 		
 		//Getting location of the first flag
@@ -169,7 +180,7 @@ public class GameWorld extends Observable {
 				
 	//adding a new food station after the last one was hit 
 	public void addNewFoodStation(){
-		listOfObjects.add(new FoodStation()); 
+		listOfObjects.add(new FoodStation(this)); 
 	}
 	
 	//Ant collides with flag 1-9
@@ -282,9 +293,51 @@ public class GameWorld extends Observable {
 			}
 		}
 	}
+		checkForCollisions(); 
+		if(getSound()) {
+			bgSnd.play(); 
+		}
 		this.setChanged(); 
 		this.notifyObservers(this); 
 }
+	
+	
+	//Checking for collisions between all objects
+	public void checkForCollisions() {
+		IIterator itr=listOfObjects.getIterator(); 
+		
+		while(itr.hasNext()) {
+			GameObject tmp=itr.getNext(); 
+			IIterator itr2= listOfObjects.getIterator(); 
+			
+			while(itr2.hasNext()) {
+				GameObject tmp2= itr2.getNext(); 
+				if(tmp!=tmp2) {
+					if(tmp.collidesWith(tmp2)) {
+						if(tmp instanceof Ant && tmp2 instanceof Spider) {
+							if(getSound()) {
+								lifeSnd.play(); 
+							}
+							}else if(tmp instanceof Ant && tmp2 instanceof Flag) {
+								if(getSound()) {
+									flagSnd.play(); 
+								}
+							}else if(tmp instanceof Ant && tmp2 instanceof FoodStation) { 
+								if(getSound()) { 
+									FoodStationSnd.play(); 
+								}
+							}
+						tmp.handleCollision(tmp2); 
+						}
+					}
+				}
+			}
+			
+		}
+		
+		
+	
+	
 	//Display the game stats 'd'
 	public void display() {
 		System.out.println("Displaying all game stats"); 
@@ -374,6 +427,28 @@ public class GameWorld extends Observable {
 			return 0;
 		}
 		
+		//Sound creation
+		
+		public void createSound() { 
+			flagSnd= new Sound("flgSnd.wav"); 
+			FoodStationSnd=new Sound("FoodStationSnd.wav"); 
+			lifeSnd= new Sound("SpiderSnd.wav"); 
+			bgSnd=new BgSound("BgSnd.wav"); 
+			
+		}
+		//sound off
+		public void soundOff() {
+			bgSnd.pause(); 
+		}
+		
+		//Sound on
+		public void soundOn() { 
+			if(getSound()) { 
+				bgSnd.play(); 
+			}
+		}
+		
+		
 		//Closing game
 		public void exit() {
 			System.exit(0);
@@ -381,12 +456,84 @@ public class GameWorld extends Observable {
 		
 		public void setSound(boolean sound) {
 			this.soundOn=sound; 
+			this.setChanged(); 
+			this.notifyObservers(this); 
 		}
 
 		public boolean getSound() {
-			// TODO Auto-generated method stub
 			return soundOn;
 		}
+		//Pause
+		public boolean getPause() { 
+			return pause; 
+		}
+		
+		public void setPause(boolean pause) { 
+			this.pause=pause; 
+		}
+		
+		//Position
+		public void positionOn() {
+			if(position==true) {
+				position=false;
+			}else {
+				position=true; 
+			}
+		}
+		//no position
+		public void positionOff() {
+			position=false; 
+		}
+		
+		//Fixed object selection processing 
+		public void clickedOn(Point clickPnt, Point origPoint) { 
+			IIterator temp= listOfObjects.getIterator(); 
+			while(temp.hasNext()) {
+				Fixed tempFixed=(Fixed)temp.getCurrent(); 
+				if(position && tempFixed.isSelected()) { 
+					int newY=(int) (clickPnt.getY()- origPoint.getY()); 
+					int newX=(int) (clickPnt.getX() - origPoint.getX()); 
+					tempFixed.setLocation(newX,newY);
+					position=false; 
+					tempFixed.setSelected(false);
+				}else {
+					if(tempFixed.contains(clickPnt,origPoint)) { 
+						tempFixed.setSelected(true); 
+					}else {
+						tempFixed.setSelected(false);
+					}
+					
+				}
+			}
+			this.setChanged();
+			this.notifyObservers(); 
+		}
+
+		public void loseLifeSound() {
+			if(getSound()){
+				lifeSnd.play(); 
+			}
+			
+		}
+
+		public static int getGameHeight() {
+			return gameHeight;
+		}
+
+		public static void setGameHeight(int gameHeight) {
+			GameWorld.gameHeight = gameHeight;
+		}
+
+		public static int getGameWidth() {
+			return gameWidth;
+		}
+
+		public static void setGameWidth(int gameWidth) {
+			GameWorld.gameWidth = gameWidth;
+		}
+		
+		
+		
 
 
 }
