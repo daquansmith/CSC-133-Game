@@ -1,29 +1,89 @@
 package com.mycompany.a3;
+import com.codename1.charts.models.Point;
 
-import com.codename1.ui.Command; 
-import com.codename1.ui.events.ActionEvent; 
-import com.codename1.ui.Button; 
+public abstract class Moveable extends GameObject{
+	//attibutes 
+			private int speed;
+			private int heading;
+			
 
+			public Moveable (int color, GameWorld gw) {
+				super(color,gw); 
+			}
 
-public class PauseCommand extends Command{ 
-	private GameWorld gw; 
-	private Game game; 
-	private Button button; 
-	
-	public PauseCommand (GameWorld gw, Game game, Button button) { 
-		super("Pause"); 
-		this.gw=gw; 
-		this.game=game; 
-		this.button=button; 
+			public Moveable (int color,int size,GameWorld gw) {
+				super(color,size,gw); 
+			}
+			//the move for a moveable Object
+			public void move() { 
+				
+				int x =(int) (this.getX()+(int)Math.cos(Math.toRadians(90-this.heading))*speed); 
+				int y =(int) (this.getY()+(int)Math.sin(Math.toRadians(90-this.heading))*speed); 
+				int angle= 0; 
+				if (this instanceof Ant) { 
+					angle=50; 
+					
+				}else if(this instanceof Spider){
+					angle=50; 	
+				}
+				
+				int origX=(int)MapView.getMapViewOrigin().getX(); 
+				int origY=(int)MapView.getMapViewOrigin().getY();
+				//Right
+				if(origX+ x +angle >= MapView.getMapViewWidth()+ origX && (heading !=0 || heading!=180)) {
+					setHeading(360-heading); 
+					
+				}
+				//Bottom
+				if(origX + x+ angle >= origX+GameWorld.getGameHeight()) { 
+					setHeading((360-heading+180)%360); 
+				}
+				
+				//Left 
+				if(origX+ x  <= origX+20  && (heading !=0 || heading!=180)) {
+					setHeading(360-heading); 
+					
+				}
+				
+				//top
+				if(origY+y <=origY) {
+					setHeading((360-heading+180)%360); 
+					
+				}
+				Point loc= new Point(x,y); 
+				
+				this.setLocation(loc); 
+				
+			}
+
+				//getters and setters 
+				public int getSpeed() {
+					return this.speed; 
+				}
+				public int getHeading() {
+					return this.heading;
+				}
+
+			public void setSpeed(int speed) {
+				this.speed=this.speed+speed;
+			}
+
+			public void setHeading(int heading) {
+				while(heading>= 360) { 
+					heading-=360; 
+				}
+				while (heading < 0){ 
+					heading+=360; 
+				}
+				this.heading=heading; 
+			}
+			//overriden toString()
+			public String toString() {
+				String parentString =super.toString(); 
+				String s= " Speed = "+speed+" Heading= "+heading;
+				String displayString=parentString+s;
+				return displayString; 
+			}
+
+			
 	}
-	
-	public void actionPerformed(ActionEvent e) { 
-		if(!gw.getPause()) { 
-			game.pressedPause(); 
-			button.setText("Play");
-		}else { 
-			game.pressedPause(); 
-			button.setText("Pause");
-		}
-	}
-}
