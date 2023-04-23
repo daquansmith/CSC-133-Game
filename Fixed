@@ -1,7 +1,5 @@
 package com.mycompany.a3;
 
-
-
 import com.codename1.charts.models.Point;
 public abstract class Fixed extends GameObject implements ISelectable{
 		private boolean select; 
@@ -47,6 +45,14 @@ public abstract class Fixed extends GameObject implements ISelectable{
 			return checkedLR && checkedTB; 
 			
 		}
+		
+		public void setLocation(int newX, int newY) {
+			if(select) { 
+				Point loc= new Point(newX,newY); 
+				super.setLocation(loc); 
+			}
+			
+		}
+		
 			
 } 	
-	
