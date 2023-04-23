@@ -67,6 +67,7 @@ public class Game extends Form implements Runnable {
 		gw.init();
 		this.show(); 
 		gw.createSound(); 
+		revalidate(); 
 		
 		timer=new UITimer(this);
 		timer.schedule(TICK,true,this); 
