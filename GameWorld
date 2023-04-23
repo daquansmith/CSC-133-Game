@@ -32,8 +32,10 @@ public class GameWorld extends Observable {
 		listOfObjects=new GameWorldCollection(); //holds all objects
 		this.clock=0; //holds game time
 		this.soundOn=false; // Holds boolean value for sound
+		this.pause=false;
+		this.position=false; 
 		addAllObjects(); //adds all objects for the game
-		pause=false; 
+		 
 		this.setChanged();
 		this.notifyObservers(this); //notifying observers of the change 
 	}
@@ -52,7 +54,6 @@ public class GameWorld extends Observable {
 		int spiders=2; 
 		//singleton pattern use
 		listOfObjects.add(Ant.getAnt(this));
-		ant=Ant.getAnt(this); 
 		
 		for(int i=1;i<=flag;i++) {
 			listOfObjects.add(new Flag(i));
@@ -146,120 +147,25 @@ public class GameWorld extends Observable {
 		this.setChanged();
 		this.notifyObservers(this);
 	}
-	
-	//Ant collides with food station 'f'
-	public void collisionFoodStation() {
-		System.out.println("Ant collided with food station"); 
-		IIterator itr=listOfObjects.getIterator(); 
-		
-		while(itr.hasNext()) {
-			GameObject temp=itr.getNext(); 
-			if(temp instanceof Ant) {//finding ant
-				IIterator itr2=listOfObjects.getIterator();
-				while(itr2.hasNext()) {
-					GameObject temp2=itr.getNext(); 
-				//finding food station 
-					if( temp2 instanceof FoodStation) {
-						if(((FoodStation)temp2).getCapacity()!=0) {
-							int cap=((FoodStation)temp2).getCapacity(); 
-							((Ant)temp).setFoodLevel(cap+((Ant)temp).getFoodLevel()); 
-							((FoodStation)temp2).setCapacity(0); 
-							((FoodStation)temp2).setColor(ColorUtil.rgb(0,100,0));
-							addNewFoodStation(); 
-							break; 
-						}
-					}
-				}
-			}
-		}
-		this.setChanged(); 
-		this.notifyObservers(this); 
-	}
-			
-			
-				
+					
 	//adding a new food station after the last one was hit 
 	public void addNewFoodStation(){
 		listOfObjects.add(new FoodStation(this)); 
 	}
 	
-	//Ant collides with flag 1-9
-	public void collisionFlag(int f) {
-		System.out.println("There was a collision between the Ant and a Flag"); 
-		//checks for all flags and sees whether or not the ant is at the correct flag 
-		IIterator itr= listOfObjects.getIterator(); 
-		while(itr.hasNext()) {
-			GameObject temp=itr.getNext(); 
-			if(temp instanceof Ant) {
-				int last=((Ant)temp).getLastFlagReached(); 
-				last++;
-				if(last==f && f!=9) {
-					System.out.println("The Ant has reached the next Flag");
-					((Ant)temp).setLastFlagReached(f); 	
-				}else if (last==9) {
-					System.out.println("Game Over, You Won!"); 
-					System.exit(0);
-				}else {
-					System.out.println("Have passed or havent reached"); 
-				}
-			}
-		}
-		this.setChanged(); 
-		this.notifyObservers(this); 
-	}
 	
-	//Ant collides with spider 'g'
-	public void spiderCollision() {
-		System.out.println("Ant has collided with a Spider"); 
-		IIterator itr= listOfObjects.getIterator(); 
-		
-		while(itr.hasNext()) {
-			GameObject temp=itr.getNext(); 
-			if(temp instanceof Ant) {
-				if(((Ant)temp).getHealthLevel()==0) {
-					System.out.println("Your ant is dead."); 
-					if(((Ant)temp).getHealthLevel()!=0) {
-						int tempFlag=((Ant)temp).getLastFlagReached();
-						IIterator itr2=listOfObjects.getIterator();
-						while(itr2.hasNext()) {
-							GameObject temp2=itr2.getNext(); 
-							if(temp2 instanceof Flag) {
-								if(tempFlag== ((Flag)temp2).getSequenceNumber()) {
-									float flagX=((Flag)temp2).getX();
-									float flagY=((Flag)temp2).getY();
-									((Ant)temp).antReset(flagX,flagY); 
-								}
-							}
-						}
-					}else {
-						System.out.println("Game is Over");
-						System.exit(0);
-					}
-				}
-			else {
-				((Ant)temp).healthLoss();
-				((Ant)temp).healthLevelCheck();
-				((Ant)temp).setColor(ColorUtil.rgb((int)(255*0.9)/((Ant)temp).getHealthLevel(),255,0));
-			}
-			}
-		}
-		this.setChanged();
-		this.notifyObservers(this); 
 	
-	}
 	
 	//Clock tick 't'
-	public void tick() {
-		System.out.println("Clock Ticks"); 
+	public void tick() { 
 		clock++; //adding to timer
 		
 		IIterator itr=listOfObjects.getIterator(); 
 		while(itr.hasNext()) {
 			GameObject temp=itr.getNext(); 
 			if(temp instanceof Ant) {
-				if(((Ant)temp).getFoodLevel()!=0) {
+				if(((Ant)temp).getFoodLevel()!=0 && ((Ant)temp).getHealthLevel()>0) {
 					((Ant)temp).move(); 
-					((Ant)temp).setHeading(0);
 					((Ant)temp).foodLevelTick();
 					
 					IIterator itr2=listOfObjects.getIterator();
@@ -274,6 +180,7 @@ public class GameWorld extends Observable {
 				}else if(((Ant)temp).getLives()!=0){
 					System.out.println("You have lost 1 life");
 					int tempFlag= ((Ant)temp).getLastFlagReached(); 
+					
 					IIterator itr3=listOfObjects.getIterator(); 
 					
 					while(itr3.hasNext()) {
@@ -415,6 +322,8 @@ public class GameWorld extends Observable {
 		}
 		return 0;
 	}
+	
+	
 	//getting the ants lastFlagReached 
 		public int getLastFlagReacged() { 
 			IIterator itr =listOfObjects.getIterator(); 
@@ -430,7 +339,7 @@ public class GameWorld extends Observable {
 		//Sound creation
 		
 		public void createSound() { 
-			flagSnd= new Sound("flgSnd.wav"); 
+			flagSnd= new Sound("flagSnd.wav"); 
 			FoodStationSnd=new Sound("FoodStationSnd.wav"); 
 			lifeSnd= new Sound("SpiderSnd.wav"); 
 			bgSnd=new BgSound("BgSnd.wav"); 
