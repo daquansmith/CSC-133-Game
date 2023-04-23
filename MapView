@@ -1,10 +1,13 @@
 package com.mycompany.a3;
+
 import java.util.Observable;
 import java.util.Observer;
-import com.codename1.ui.plaf.Border; 
+import com.codename1.ui.plaf.Border;
+import com.codename1.charts.models.Point;
 import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.Container;
+import com.codename1.ui.Graphics;
 import com.codename1.ui.TextArea;
 
 
@@ -12,51 +15,68 @@ public class MapView extends Container implements Observer {
 	private GameWorld gw; 
 	private static int height;//The height of the center
 	private static int width; //width of the center
-	private TextArea gameText;
+	private static Point mapViewOrigin; 
 	
 	public MapView() {
 		this.getAllStyles().setBorder(Border.createLineBorder(10,ColorUtil.rgb(255, 0, 0)));
 		this.setLayout(new BorderLayout());
-		gameText=new TextArea(); 
-		gameText.getAllStyles().setBgTransparency(0);
-		gameText.setEditable(false);
 		MapView.height=this.getHeight(); 
 		MapView.width=this.getWidth(); 
-		this.setWidth(1000); 
-		this.setHeight(1000);
-		this.add(BorderLayout.NORTH,gameText); 
+		this.getAllStyles().setBgColor(ColorUtil.WHITE);
+		this.getAllStyles().setBgTransparency(255); 
 	}
 	//Setting map height
-	public void setMapHeight(int height) {
+	public static void setMapViewHeight(int height) {
 		MapView.height=height; 
 
 	}
 	//Setting map width
-	public void setMapWidth(int width) {
+	public static void setMapViewWidth(int width) {
 		MapView.width=width; 
 
 	}
 	//Getting map height
-	public int getMapHeight() {
+	public int getMapViewHeight() {
 		return height; 
 
 	}
 	//Getting map width
-	public int getMapWidth() {
+	public static int getMapViewWidth() {
 		return width; 
 
 	}
 	//The observers update method in order to get the correct output of the map
 	public void update(Observable observable, Object data) {
 		gw=(GameWorld) data;
-		IIterator itr= gw.getCollection().getIterator(); 
-		String display=""; 
-		while(itr.hasNext()) {
-			display=display+itr.getNext().toString()+"\n";
-		}
-		gameText.setText(display);
 		this.repaint();
 		
 	}
+	
+	public void paint(Graphics g) {
+		super.paint(g);
+		Point pCmpRelPoint=new Point(this.getX(),this.getY());
+		IIterator itr= gw.getCollection().getIterator(); 
+		while(itr.hasNext()) {
+			GameObject temp=itr.getNext();
+			if(temp instanceof IDrawable) { 
+				((IDrawable)temp).draw(g,pCmpRelPoint); 
+			}
+		}
+	}
+	
+	public void pressedPointer(int x, int y) { 
+		Point clickPoint = new Point(x-getParent().getAbsoluteX(), y-getParent().getAbsoluteY()); 
+		Point originalPoint= new Point(getX(),getY()); 
+		if(gw.getPause()) { 
+			gw.clickedOn(clickPoint, originalPoint);
+		} 
+	}
+	public static Point getMapViewOrigin() {
+		return mapViewOrigin;
+	}
+	public static void setMapViewOrigin(Point mapViewOrigin) {
+		MapView.mapViewOrigin = mapViewOrigin;
+	}
+
 
 }
