@@ -55,25 +55,17 @@ public class FoodStation extends Fixed implements IDrawable {
 	public void draw(Graphics g, Point pCmpRelPoint) {
 		g.setColor(super.getColor());
 		
-		int x= (int) ((int)Math.round(this.getX()+20)+ pCmpRelPoint.getX()); 
-		int y= (int) ((int)Math.round(this.getY()+10)+ pCmpRelPoint.getY()); 
-		
-		int locX=(int) ((int)this.getLocation().getX()+pCmpRelPoint.getX()); 
-		int locY=(int) ((int)this.getLocation().getY()+pCmpRelPoint.getY()); 
-		
-		int[] xAxis= {locX,(locX-20),(locX +20),locX}; 
-		int[] yAxis= {(locY+30),(locY-30),(locY-30),(locY+30)}; 
-		int verticies=4; 
-		
-		
+		int x= (int)this.getX()+(int)pCmpRelPoint.getX(); 
+		int y= (int)this.getY()+(int)pCmpRelPoint.getY(); 
+		g.fillRect(x, y, this.getSize(), this.getSize());
 		
 		if(super.isSelected()) {
-			g.drawPolygon(xAxis,yAxis,verticies); 
+			g.drawRect(x, y, this.getSize(), this.getSize()); 
 		}else { 
-			g.fillPolygon(xAxis, yAxis, verticies);
+			g.fillRect(x, y, this.getSize(),this.getSize());
 		}
 		g.setColor(ColorUtil.BLACK); 
-		g.drawString(""+this.getCapacity(), locX, locY);
+		g.drawString(""+this.getCapacity(), x, y);
 		
 	}
 		
