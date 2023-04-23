@@ -35,12 +35,16 @@ public class Flag extends Fixed implements IDrawable{
 	
 	public void handleCollision(GameObject object) { 
 		if(this instanceof Flag && object instanceof Ant) { 
+			
 			if(((Ant) object).getLastFlagReached()+1==this.getSequenceNumber() && this.getSequenceNumber()!=9) {
 				System.out.println("Ant has reached the next flag"); 
 				((Ant) object).setLastFlagReached(this.getSequenceNumber()) ;
-			}else if(this.getSequenceNumber()+1==9) {
+				
+			}else if(this.getSequenceNumber()==9 && object instanceof Ant) {
+				if(((Ant) object).getLastFlagReached()+1==9){
 				System.out.println("YOU WIN!! Total Time: "+ super.getGW().getTime()); 
 				gw.exit(); 
+				}
 			}
 		}
 	}
@@ -66,8 +70,8 @@ public class Flag extends Fixed implements IDrawable{
 		}else { 
 			g.fillPolygon(xAxis, yAxis, verticies);
 		}
-		g.setColor(ColorUtil.BLUE); 
-		g.drawString(""+this.sequenceNumber, locX, locY);
+		g.setColor(ColorUtil.BLACK); 
+		g.drawString(""+this.sequenceNumber, x, y);
 		
 	}
 
