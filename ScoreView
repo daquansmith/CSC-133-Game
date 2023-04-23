@@ -1,5 +1,6 @@
 package com.mycompany.a3;
 
+
 import java.util.Observable;
 import java.util.Observer;
 
@@ -114,7 +115,7 @@ public class ScoreView extends Container implements Observer{
 		
 		if(gw.getSound()) {
 			this.soundValueLabel.setText("ON");
-			System.out.println("Sound ON");
+			
 		}else {
 			this.soundValueLabel.setText("OFF"); 
 		}
