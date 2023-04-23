@@ -15,8 +15,8 @@ public class Ant extends Moveable implements IDrawable{
 	
 	
 	private Ant(GameWorld gw) {
-		super(ColorUtil.rgb(255, 0, 0), 20,gw);//making ant red and size 20
-		this.foodLevel=(30); //starts out at 30 food level 
+		super(ColorUtil.rgb(255, 0, 0), 50,gw);//making ant red and size 20
+		this.foodLevel=(500); //starts out at 30 food level 
 		this.lastFlagReached=1;//first flag needed to be reached
 		this.maxSpeed=50; //max speed to 50
 		this.foodConsumptionRate=2; //consumption rate per tick 
@@ -139,7 +139,7 @@ public class Ant extends Moveable implements IDrawable{
 	//Brake or decrease speed of ant
 	public void decreaseAntSpeed() {
 		int currSpeed=getSpeed(); 
-		int negSpeed=currSpeed*-1;
+		int negSpeed=currSpeed-1;
 		if(currSpeed>0) {
 			this.setSpeed(negSpeed);
 		}
@@ -179,11 +179,8 @@ public class Ant extends Moveable implements IDrawable{
 		lives--;
 	}
 	
-		
-
-	
 	public void handleCollision(GameObject object) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	
@@ -192,13 +189,13 @@ public class Ant extends Moveable implements IDrawable{
 		int x = (int)this.getX()+(int)pCmpRelPoint.getX(); 
 		int y= (int)this.getY()+(int)pCmpRelPoint.getY(); 
 		
-		g.fillArc(x, y, 0, 0, 0, 360);
+		g.fillArc(x, y, this.getSize(), this.getSize(), 0, 360);
 		
 		double line= Math.toRadians(90-super.getHeading()); 
 		double steerX=((Math.cos(line)*50)+this.getX()+pCmpRelPoint.getX()); 
 		double steerY=((Math.cos(line)*50)+this.getY()+pCmpRelPoint.getY()); 
 		
-		g.setColor(ColorUtil.red(150));
+		g.setColor(ColorUtil.red(255));
 		
 		
 	}
