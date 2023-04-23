@@ -15,7 +15,7 @@ public class Ant extends Moveable implements IDrawable{
 	
 	
 	private Ant(GameWorld gw) {
-		super(ColorUtil.rgb(255, 0, 0), 50,gw);//making ant red and size 20
+		super(ColorUtil.rgb(255, 0, 0), 45,gw);//making ant red and size 20
 		this.foodLevel=(500); //starts out at 30 food level 
 		this.lastFlagReached=1;//first flag needed to be reached
 		this.maxSpeed=50; //max speed to 50
@@ -30,7 +30,6 @@ public class Ant extends Moveable implements IDrawable{
 	public static Ant getAnt(GameWorld gw) {
 		if (ant==null) {
 			ant= new Ant(gw); 
-			
 		}
 		return ant;
 	}
@@ -174,9 +173,10 @@ public class Ant extends Moveable implements IDrawable{
 		this.setHeading(0);
 		this.maxSpeed= 50; 
 		this.foodConsumptionRate=2; 
-		this.foodLevel=20;
+		this.foodLevel=500;
 		this.healthLevel=10; 
 		lives--;
+		this.setSpeed(5);
 	}
 	
 	public void handleCollision(GameObject object) {
@@ -194,8 +194,8 @@ public class Ant extends Moveable implements IDrawable{
 		double line= Math.toRadians(90-super.getHeading()); 
 		double steerX=((Math.cos(line)*50)+this.getX()+pCmpRelPoint.getX()); 
 		double steerY=((Math.cos(line)*50)+this.getY()+pCmpRelPoint.getY()); 
-		
 		g.setColor(ColorUtil.red(255));
+		
 		
 		
 	}
