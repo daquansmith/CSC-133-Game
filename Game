@@ -1,6 +1,6 @@
 package com.mycompany.a3;
 
-
+import com.codename1.charts.models.Point;
 import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.Button;
 import com.codename1.ui.CheckBox;
@@ -9,6 +9,7 @@ import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Border;
+import com.codename1.ui.util.UITimer;
 import com.codename1.ui.Label;
 import com.codename1.ui.Container;
 import com.codename1.ui.TextField;
@@ -17,11 +18,32 @@ import com.codename1.ui.events.ActionEvent;
 import java.lang.String;
 import java.util.Observable;
 
-public class Game extends Form {
+public class Game extends Form implements Runnable {
 	private GameWorld gw;
 	private MapView mv;//creating mapview observer
 	private ScoreView sv;//creating scoreview observer
-
+	private UITimer timer; 
+	private int TICK=20; 
+	
+	
+	//Doing this in order to use all of the commands interchangably
+	private CheckBox chkBoxCmd; 
+	private AccelerateCommand accmd; 
+	private ExitCommand ecmd; 
+	private HelpCommand hcmd; 
+	private SoundCommand sound; 
+	private BrakeCommand bkcmd; 
+	private TurnRightCommand rtcmd; 
+	private TurnLeftCommand ltcmd;
+	private AboutCommand acmd;
+	private Button btnBrake;
+	private Button btnRight;
+	private Button btnAccelerate;
+	private PositionCommand position;
+	private Button btnPosition;
+	private Button btnPause;
+	private PauseCommand pause;
+	private Button btnLeft; 
 	
 	//new game method with observers and desired layout manager
 	public Game() {
@@ -44,6 +66,18 @@ public class Game extends Form {
 		
 		gw.init();
 		this.show(); 
+		gw.createSound(); 
+		
+		timer=new UITimer(this);
+		timer.schedule(TICK,true,this); 
+		
+		GameWorld.setGameWidth(mv.getWidth());
+		GameWorld.setGameHeight(mv.getHeight());
+		
+		mv.setMapViewOrigin(new Point(mv.getX(),mv.getY()));
+		MapView.setMapViewHeight(mv.getHeight());
+		MapView.setMapViewWidth(mv.getWidth());
+		
 		
 		 
 	}
@@ -56,27 +90,27 @@ public class Game extends Form {
 		
 		
 		//Help Command
-		HelpCommand hcmd=new HelpCommand(); 
+		hcmd=new HelpCommand(); 
 		tools.addCommandToRightBar(hcmd); 
 		
 		//Exit Command
-		ExitCommand ecmd=new ExitCommand(); 
+		 ecmd=new ExitCommand(); 
 		tools.addCommandToSideMenu(ecmd); 
 		
 		//About
-		AboutCommand acmd=new AboutCommand();
+		 acmd=new AboutCommand();
 		tools.addCommandToSideMenu(acmd);
 		
 		//Acceleration Command
-		AccelerateCommand accmd= new AccelerateCommand(gw); 
+		 accmd= new AccelerateCommand(gw); 
 		tools.addCommandToSideMenu(accmd); 
 		
 		//Sound 
-		CheckBox chkBoxCmd= new CheckBox(); 
+		chkBoxCmd= new CheckBox(); 
 		chkBoxCmd.getAllStyles().setBgTransparency(255);
 		chkBoxCmd.getAllStyles().setBgColor(ColorUtil.LTGRAY);
 		chkBoxCmd.setFocusable(false);
-		SoundCommand sound=new SoundCommand(gw); 
+	    sound=new SoundCommand(gw); 
 		chkBoxCmd.setCommand(sound);
 		//adding all to the sidemenu 
 		tools.addComponentToSideMenu(chkBoxCmd);
@@ -89,15 +123,15 @@ public class Game extends Form {
 		rightContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
 		
 		// Brake button
-		BrakeCommand bkcmd=new BrakeCommand(gw); 
-		Button btnBrake= new Button(bkcmd); 
+		 bkcmd=new BrakeCommand(gw); 
+		 btnBrake= new Button(bkcmd); 
 		btnBrake=topSide(btnBrake); 
 		rightContainer.add(btnBrake); 
 		addKeyListener('b', bkcmd); 
 		
 		//Right Turn Button
-		TurnRightCommand rtcmd=new TurnRightCommand(gw); 
-		Button btnRight=new Button(rtcmd); 
+		 rtcmd=new TurnRightCommand(gw); 
+		 btnRight=new Button(rtcmd); 
 		btnRight= applyMakeup(btnRight); 
 		rightContainer.add(btnRight); 
 		addKeyListener('r',rtcmd); 
@@ -105,23 +139,24 @@ public class Game extends Form {
 		
 		
 	}
+	
 	private void setUpCommandLeft() {
 		Container leftContainer=new Container((new BoxLayout(BoxLayout.Y_AXIS)));
 		leftContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
 		
 		//Accelerate Button
-		AccelerateCommand accmd=new AccelerateCommand(gw); 
-		Button btnAccelerate = new Button(accmd); 
+		 accmd=new AccelerateCommand(gw); 
+		 btnAccelerate = new Button(accmd); 
 		btnAccelerate=topSide(btnAccelerate); 
 		leftContainer.add(btnAccelerate);
 		addKeyListener('a',accmd); 
 		
 		//Turn Left Button 
-		TurnLeftCommand lftcmd = new TurnLeftCommand(gw); 
-		Button btnLeft= new Button(lftcmd); 
+		 ltcmd = new TurnLeftCommand(gw); 
+		 btnLeft= new Button(ltcmd); 
 		btnLeft= applyMakeup(btnLeft); 
 		leftContainer.add(btnLeft); 
-		addKeyListener('l',lftcmd); 
+		addKeyListener('l',ltcmd); 
 		// adding all command buttons to the west container
 		this.add(BorderLayout.WEST,leftContainer); 
 		
@@ -133,35 +168,19 @@ public class Game extends Form {
 		Container bottomContainer= new Container((new BoxLayout(BoxLayout.X_AXIS)));
 		bottomContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
 		
-		//Collide with spider Button
+		//PositionCommand
+		 position = new PositionCommand(gw); 
+		 btnPosition=new Button(position); 
+		btnPosition=bothSide(btnPosition); 
+		bottomContainer.add(btnPosition); 
 		
-		CollideWithSpiderCommand cs= new CollideWithSpiderCommand(gw); 
-		Button btnCs=new Button(cs); 
-		btnCs.getAllStyles().setMarginLeft(350); 
-		btnCs=bothSide(btnCs); 
-		bottomContainer.add(btnCs);
-		
-		//Collide with Flag 
-		
-		CollideFlagCommand cFlag= new CollideFlagCommand(gw); 
-		Button btnFlag=new Button(cFlag); 
-		btnFlag =bothSide(btnFlag); 
-		bottomContainer.add(btnFlag); 
-		
-		//Collide with food Station 
-		CollideWithFoodStationCommand cFood= new CollideWithFoodStationCommand(gw); 
-		Button btnFood= new Button(cFood); 
-		btnFood=bothSide(btnFood); 
-		bottomContainer.add(btnFood); 
-		addKeyListener('f',cFood); 
-		
-		//Tick Button
-		TickCommand tick=new TickCommand(gw); 
-		Button btnTick=new Button(tick); 
-		btnTick=bothSide(btnTick); 
-		bottomContainer.add(btnTick); 
-		addKeyListener('t',tick); 
-		//adding all commmand buttons to south container
+		//PauseCommand
+		 btnPause=new Button("Pause"); 
+		btnPause=bothSide(btnPause);
+		btnPause.getAllStyles().setMarginRight(450);
+		 pause=new PauseCommand(gw,this,btnPause); 
+		btnPause.setCommand(pause);
+		bottomContainer.add(btnPause); 
 		this.add(BorderLayout.SOUTH,bottomContainer); 
 		
 	}
@@ -203,8 +222,54 @@ public class Game extends Form {
 	}
 
 
+	@Override
+	public void run() {
+		gw.tick(); 
+		
+	}
 
-	
-    
-						
-}
+
+	public void pressedPause() {
+		if(!gw.getPause()) { 
+			timer.cancel(); 
+			removeKeyListener('b',bkcmd); 
+			removeKeyListener('a',accmd); 
+			removeKeyListener('l',ltcmd); 
+			removeKeyListener('r',rtcmd);
+			
+			
+			accmd.setEnabled(false); 
+			bkcmd.setEnabled(false); 
+			ltcmd.setEnabled(false);
+			rtcmd.setEnabled(false); 
+			btnAccelerate.setEnabled(false);
+			btnBrake.setEnabled(false);
+			btnLeft.setEnabled(false); 
+			position.setEnabled(true);
+			btnPosition.setEnabled(true);
+			gw.soundOff();
+			gw.setPause(!gw.getPause());
+			
+			}else {
+				timer.schedule(TICK, true, this);
+				addKeyListener('b',bkcmd); 
+				addKeyListener('a',accmd); 
+				addKeyListener('l',ltcmd); 
+				addKeyListener('r',rtcmd);
+				accmd.setEnabled(true); 
+				bkcmd.setEnabled(true); 
+				ltcmd.setEnabled(true);
+				rtcmd.setEnabled(true); 
+				btnAccelerate.setEnabled(true);
+				btnBrake.setEnabled(true);
+				btnLeft.setEnabled(true); 
+				position.setEnabled(false);
+				btnPosition.setEnabled(false);
+				gw.soundOn();
+				gw.setPause(!gw.getPause());
+				
+			}
+		}
+		
+		
+	}
