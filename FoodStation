@@ -1,6 +1,5 @@
 package com.mycompany.a3;
 
-
 import java.util.Random;
 
 import com.codename1.charts.models.Point;
@@ -11,7 +10,7 @@ import com.codename1.ui.Graphics;
 public class FoodStation extends Fixed implements IDrawable {
 	private int capacity;
 	private static GameWorld gw; 
-	private int size=rndm.nextInt(50)+10;//using this for a random number 
+	private int size=rndm.nextInt(100)+10;//using this for a random number 
 	//default food station constructor
 	public FoodStation (GameWorld gw) {
 		super(ColorUtil.rgb(0, 255, 0),gw);
@@ -52,12 +51,30 @@ public class FoodStation extends Fixed implements IDrawable {
 		}
 	}
 	
-		
-
 	@Override
 	public void draw(Graphics g, Point pCmpRelPoint) {
-		// TODO Auto-generated method stub
+		g.setColor(super.getColor());
+		
+		int x= (int) ((int)Math.round(this.getX()+20)+ pCmpRelPoint.getX()); 
+		int y= (int) ((int)Math.round(this.getY()+10)+ pCmpRelPoint.getY()); 
+		
+		int locX=(int) ((int)this.getLocation().getX()+pCmpRelPoint.getX()); 
+		int locY=(int) ((int)this.getLocation().getY()+pCmpRelPoint.getY()); 
+		
+		int[] xAxis= {locX,(locX-20),(locX +20),locX}; 
+		int[] yAxis= {(locY+30),(locY-30),(locY-30),(locY+30)}; 
+		int verticies=4; 
+		
+		
+		
+		if(super.isSelected()) {
+			g.drawPolygon(xAxis,yAxis,verticies); 
+		}else { 
+			g.fillPolygon(xAxis, yAxis, verticies);
+		}
+		g.setColor(ColorUtil.BLACK); 
+		g.drawString(""+this.getCapacity(), locX, locY);
 		
 	}
-
+		
 }
