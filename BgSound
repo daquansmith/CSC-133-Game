@@ -1,8 +1,9 @@
 package com.mycompany.a3;
-import java.io.InputStream; 
 
 import com.codename1.ui.Display; 
-import com.codename1.media.MediaManager; 
+import com.codename1.media.MediaManager;
+
+import java.io.InputStream;
 import com.codename1.media.Media; 
 
 
