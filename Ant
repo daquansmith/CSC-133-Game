@@ -14,8 +14,8 @@ public class Ant extends Moveable implements IDrawable{
 	private static Ant ant; 
 	
 	
-	private Ant(GameWorld gw) {
-		super(ColorUtil.rgb(255, 0, 0), 45,gw);//making ant red and size 20
+	private Ant(GameWorld gw)  {
+		super(ColorUtil.rgb(255, 0, 0), 50,gw);//making ant red and size 20
 		this.foodLevel=(500); //starts out at 30 food level 
 		this.lastFlagReached=1;//first flag needed to be reached
 		this.maxSpeed=50; //max speed to 50
@@ -23,6 +23,8 @@ public class Ant extends Moveable implements IDrawable{
 		this.healthLevel=10;//health level of 10 before losing life
 		this.maxHealth=10; //max health of the ant
 		this.lives=3; // starts with three lives
+		this.setSpeed(1);
+		this.setHeading(1);
 		
 	}
 	//This is for singleton pattern
@@ -30,6 +32,7 @@ public class Ant extends Moveable implements IDrawable{
 	public static Ant getAnt(GameWorld gw) {
 		if (ant==null) {
 			ant= new Ant(gw); 
+			
 		}
 		return ant;
 	}
@@ -138,7 +141,7 @@ public class Ant extends Moveable implements IDrawable{
 	//Brake or decrease speed of ant
 	public void decreaseAntSpeed() {
 		int currSpeed=getSpeed(); 
-		int negSpeed=currSpeed-1;
+		int negSpeed=currSpeed*-1;
 		if(currSpeed>0) {
 			this.setSpeed(negSpeed);
 		}
@@ -161,6 +164,7 @@ public class Ant extends Moveable implements IDrawable{
 			lives--; 
 		}
 	}
+	
 		
 	//Taking food level down on every tick 
 	public void foodLevelTick() {
@@ -176,14 +180,14 @@ public class Ant extends Moveable implements IDrawable{
 		this.foodLevel=500;
 		this.healthLevel=10; 
 		lives--;
-		this.setSpeed(5);
 	}
 	
-	public void handleCollision(GameObject object) {
+
+	@Override
+	public void handleCollision(GameObject other) {
 		
 		
 	}
-	
 	public void draw(Graphics g, Point pCmpRelPoint) {
 		g.setColor(super.getColor());
 		int x = (int)this.getX()+(int)pCmpRelPoint.getX(); 
@@ -194,9 +198,11 @@ public class Ant extends Moveable implements IDrawable{
 		double line= Math.toRadians(90-super.getHeading()); 
 		double steerX=((Math.cos(line)*50)+this.getX()+pCmpRelPoint.getX()); 
 		double steerY=((Math.cos(line)*50)+this.getY()+pCmpRelPoint.getY()); 
-		g.setColor(ColorUtil.red(255));
+		g.setColor(ColorUtil.BLACK);
+		g.drawLine((int)this.getX()+(int)pCmpRelPoint.getX(), (int)this.getY()+20+(int)pCmpRelPoint.getY(), (int)steerX,(int)steerY);
 		
 		
 		
 	}
-} 
+		
+}
