@@ -9,14 +9,14 @@ import com.codename1.ui.Graphics;
 
 public class FoodStation extends Fixed implements IDrawable {
 	private int capacity;
-	private static GameWorld gw; 
-	private int size=rndm.nextInt(100)+10;//using this for a random number 
+	private int size=rndm.nextInt(100)+10;//using this for a random number
+	private GameWorld gw; 
 	//default food station constructor
 	public FoodStation (GameWorld gw) {
 		super(ColorUtil.rgb(0, 255, 0),gw);
 		super.setSize(size);
 		this.capacity=this.size; //size proportionate to capacity 
-		this.gw=gw; 
+		
 	}
 	//getting capacity of food station 
 	public int getCapacity() {
@@ -30,6 +30,7 @@ public class FoodStation extends Fixed implements IDrawable {
 	public void setCapacity(int food) {
 		this.capacity=food; 
 		
+		
 	}
 	//overriden to string for output
 	public String toString() {
@@ -38,25 +39,12 @@ public class FoodStation extends Fixed implements IDrawable {
 		String displayString ="Food Station:"+parentString+foodStationString; 
 		return displayString; 
 	}
-	
-	public void handleCollision(GameObject object) { 
-		if(this instanceof FoodStation && object instanceof Ant) { 
-			if(this.getCapacity() !=0) { 
-				int temp=this.getCapacity(); 
-				((Ant) object).setFoodLevel(temp+((Ant)object).getFoodLevel()); 
-				this.setCapacity(0); 
-				this.setColor(ColorUtil.rgb(100, 100, 100));
-				super.getGW().addNewFoodStation(); 
-			}
-		}
-	}
-	
 	@Override
-	public void draw(Graphics g, Point pCmpRelPoint) {
+	public void draw(Graphics g, Point pCmpRelPrnt) {
 		g.setColor(super.getColor());
 		
-		int x= (int)this.getX()+(int)pCmpRelPoint.getX(); 
-		int y= (int)this.getY()+(int)pCmpRelPoint.getY(); 
+		int x= (int)this.getX()+(int)pCmpRelPrnt.getX(); 
+		int y= (int)this.getY()+(int)pCmpRelPrnt.getY(); 
 		g.fillRect(x, y, this.getSize(), this.getSize());
 		
 		if(super.isSelected()) {
@@ -68,5 +56,12 @@ public class FoodStation extends Fixed implements IDrawable {
 		g.drawString(""+this.getCapacity(), x, y);
 		
 	}
+	@Override
+	public void handleCollision(GameObject other) {
+		if (this instanceof FoodStation && other instanceof Ant) { 
+			//this.getGw().collisionFoodStation(); 
+		} 
 		
+	 }
+
 }
