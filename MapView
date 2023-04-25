@@ -2,81 +2,61 @@ package com.mycompany.a3;
 
 import java.util.Observable;
 import java.util.Observer;
-import com.codename1.ui.plaf.Border;
-import com.codename1.charts.models.Point;
-import com.codename1.charts.util.ColorUtil;
-import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.Container;
 import com.codename1.ui.Graphics;
-import com.codename1.ui.TextArea;
-
-
-public class MapView extends Container implements Observer {
-	private GameWorld gw; 
-	private static int height;//The height of the center
-	private static int width; //width of the center
-	private static Point mapViewOrigin; 
+import com.codename1.charts.models.Point; 
+import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.plaf.Border;
+import com.codename1.charts.util.ColorUtil;
+import com.codename1.ui.Container;
+public class MapView extends Container implements Observer  {
+	//private TextArea gameText;
+	private static int height;
+	private static int width;
+	
+	static private Point mapViewOrigin;
+	private GameWorld gw;
+	
 	
 	public MapView() {
 		this.getAllStyles().setBorder(Border.createLineBorder(10,ColorUtil.rgb(255, 0, 0)));
+		MapView.height = this.getHeight();
+		MapView.width = this.getWidth();
+
 		this.setLayout(new BorderLayout());
-		MapView.height=this.getHeight(); 
-		MapView.width=this.getWidth(); 
 		this.getAllStyles().setBgColor(ColorUtil.WHITE);
-		this.getAllStyles().setBgTransparency(255); 
+		this.getAllStyles().setBgTransparency(255);
 	}
-	//Setting map height
-	public static void setMapViewHeight(int height) {
-		MapView.height=height; 
-
-	}
-	//Setting map width
-	public static void setMapViewWidth(int width) {
-		MapView.width=width; 
-
-	}
-	//Getting map height
-	public int getMapViewHeight() {
-		return height; 
-
-	}
-	//Getting map width
-	public static int getMapViewWidth() {
-		return width; 
-
-	}
-	//The observers update method in order to get the correct output of the map
-	public void update(Observable observable, Object data) {
-		gw=(GameWorld) data;
-		this.repaint();
-		
-	}
+	public static int getMapViewWidth() { return width; }
+	public static int getMapViewHeight() { return height; }
+	public static void setMapViewWidth(int width) { MapView.width = width; }
+	public static void setMapViewHeight(int height) { MapView.height = height; }
 	
+	public void setMapViewOrigin(Point p) { MapView.mapViewOrigin = p; }
+	public static Point getMapViewOrigin() { return mapViewOrigin; }
+
+	@Override
+	public void update(Observable observable, Object data) {
+		gw = (GameWorld) data;
+		this.repaint();
+	}
+	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		Point pCmpRelPoint=new Point(this.getX(),this.getY());
-		IIterator itr= gw.getCollection().getIterator(); 
+		Point pCmpRelPrnt = new Point(this.getX(), this.getY());
+		IIterator itr = gw.getCollection().getIterator();
 		while(itr.hasNext()) {
-			GameObject temp=itr.getNext();
-			if(temp instanceof IDrawable) { 
-				((IDrawable)temp).draw(g,pCmpRelPoint); 
+			GameObject tempObject = itr.getNext();
+			if (tempObject instanceof IDrawable) {
+				((IDrawable) tempObject).draw(g, pCmpRelPrnt);
 			}
 		}
 	}
-	
-	public void pressedPointer(int x, int y) { 
-		Point clickPoint = new Point(x-getParent().getAbsoluteX(), y-getParent().getAbsoluteY()); 
-		Point originalPoint= new Point(getX(),getY()); 
-		if(gw.getPause()) { 
-			gw.clickedOn(clickPoint, originalPoint);
-		} 
+	@Override
+	public void pointerPressed(int x, int y ) {
+		Point clickPoint = new Point(x - getParent().getAbsoluteX(), y - getParent().getAbsoluteY());
+		Point originalPoint = new Point(getX(), getY());
+		if(gw.getPause()) {
+			gw.click(clickPoint, originalPoint);
+		}
 	}
-	public static Point getMapViewOrigin() {
-		return mapViewOrigin;
-	}
-	public static void setMapViewOrigin(Point mapViewOrigin) {
-		MapView.mapViewOrigin = mapViewOrigin;
-	}
-
-
-}
+}    
