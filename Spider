@@ -6,20 +6,20 @@ import com.codename1.charts.models.Point;
 import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.Graphics; 
 //Spider object class
-public class Spider extends Moveable implements IDrawable {
+public class Spider extends Moveable implements IDrawable{
 	public Spider(GameWorld gw) {
-		super(ColorUtil.rgb(0,0,0), gw);
-		final int MINIMUM_SIZE=10;
-		final int MAXIMUM_SIZE=50; 
+		super(ColorUtil.rgb(0,0,0),gw);
+		final int MINIMUM_SIZE=30;
+		final int MAXIMUM_SIZE=60; 
 		super.setHeading(rndm.nextInt(360));
-		super.setSpeed(rndm.nextInt(10)); 
+		super.setSpeed(rndm.nextInt(2)); 
 		super.setSize(new Random().nextInt(MAXIMUM_SIZE-MINIMUM_SIZE)+MINIMUM_SIZE); 
 	}
 	
 	public void setSize(int size) {}; 
 	
-	public void setColor(int color) {};
 	
+	public void setColor(int color) {};
 	//different movement of spider
 	public void spiderMove() {
 		this.setHeading(super.getHeading()+rndm.nextInt(5)); 
@@ -33,36 +33,23 @@ public class Spider extends Moveable implements IDrawable {
 	}
 
 	@Override
-	public void handleCollision(GameObject object) {
-		if(this instanceof Spider && object instanceof Ant) { 
-			if(((Ant)object).getHealthLevel()==0) {
-				System.out.println("Your Ant Ran Out Of Health"); 
-				super.getGW().exit(); 
-				if(((Ant)object).getLives()!=0){
-					System.out.println("You have lost a life"); 
-					super.getGW().loseLifeSound(); 
-					int last_flag=((Ant)object).getLastFlagReached(); 
-					//lose a life ant
-				}
-			}else {
-				((Ant)object).healthLoss();
-			}
+	public void handleCollision(GameObject other) {
+		if(this instanceof Spider && other instanceof Ant) { 
+			//this.getGw().spiderCollision();
 		}
-		
 	}
 
 	@Override
-	public void draw(Graphics g, Point pCmpRelPoint) {
+	public void draw(Graphics g, Point pCmpRelPrnt) {
 		g.setColor(ColorUtil.BLACK);
-		int x=(int) ((int)this.getX() + pCmpRelPoint.getX()); 
-		int y=(int) ((int)this.getY() + pCmpRelPoint.getY());
+		int x=(int) ((int)this.getX() + pCmpRelPrnt.getX()); 
+		int y=(int) ((int)this.getY() + pCmpRelPrnt.getY());
 		
-		int[] pointsX = {x,(x-20),(x+20),x}; 
+		int[] pointsX = {x,(x-10),(x+30),x}; 
 		int[] pointsY= {(y+30),(y-30),(y-30),(y+30)}; 
 		
 		int nPoints=3; 
 		g.drawPolygon(pointsX, pointsY, nPoints);
-		
 		
 	}
 }
