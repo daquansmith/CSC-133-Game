@@ -1,5 +1,4 @@
 package com.mycompany.a3;
-
 import com.codename1.charts.models.Point;
 import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.Button;
@@ -64,9 +63,10 @@ public class Game extends Form implements Runnable {
 		setUpCommandRight();
 		setUpCommandBottom(); 
 		
+		
 		gw.init();
 		this.show(); 
-		gw.createSound(); 
+		//gw.createSound(); 
 		revalidate(); 
 		
 		timer=new UITimer(this);
@@ -170,8 +170,8 @@ public class Game extends Form implements Runnable {
 		bottomContainer.getAllStyles().setBorder(Border.createLineBorder(1,ColorUtil.rgb(0, 0, 0)));
 		
 		//PositionCommand
-		 position = new PositionCommand(gw); 
-		 btnPosition=new Button(position); 
+		position = new PositionCommand(gw); 
+		btnPosition=new Button(position); 
 		btnPosition=bothSide(btnPosition); 
 		bottomContainer.add(btnPosition); 
 		
@@ -225,7 +225,7 @@ public class Game extends Form implements Runnable {
 
 	@Override
 	public void run() {
-		gw.tick(); 
+		gw.tick(TICK); 
 		
 	}
 
@@ -248,7 +248,7 @@ public class Game extends Form implements Runnable {
 			btnLeft.setEnabled(false); 
 			position.setEnabled(true);
 			btnPosition.setEnabled(true);
-			gw.soundOff();
+			//gw.soundOff();
 			gw.setPause(!gw.getPause());
 			
 			}else {
@@ -266,11 +266,9 @@ public class Game extends Form implements Runnable {
 				btnLeft.setEnabled(true); 
 				position.setEnabled(false);
 				btnPosition.setEnabled(false);
-				gw.soundOn();
+				//gw.soundOn();
 				gw.setPause(!gw.getPause());
 				
 			}
 		}
-		
-		
-	}
+}
