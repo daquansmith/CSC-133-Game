@@ -16,15 +16,15 @@ public class Ant extends Moveable implements IDrawable{
 	
 	private Ant(GameWorld gw)  {
 		super(ColorUtil.rgb(255, 0, 0), 50,gw);//making ant red and size 20
-		this.foodLevel=(500); //starts out at 30 food level 
-		this.lastFlagReached=1;//first flag needed to be reached
+		this.foodLevel=(3000); //starts out at 30 food level 
+		this.lastFlagReached=0;//first flag needed to be reached
 		this.maxSpeed=50; //max speed to 50
 		this.foodConsumptionRate=2; //consumption rate per tick 
 		this.healthLevel=10;//health level of 10 before losing life
 		this.maxHealth=10; //max health of the ant
 		this.lives=3; // starts with three lives
-		this.setSpeed(1);
-		this.setHeading(1);
+		super.setHeading(rndm.nextInt(360));
+		super.setSpeed(1);
 		
 	}
 	//This is for singleton pattern
@@ -117,13 +117,13 @@ public class Ant extends Moveable implements IDrawable{
 	//Steer ant right
 	public void steerAntRight() { 
 		int current=this.getHeading();  
-		this.setHeading(current+5);
+		super.setHeading(current+35);
 	}
  
 	//steer ant left
 	public void steerAntLeft() {
 		int current=this.getHeading();
-		this.setHeading(current-5);
+		super.setHeading(current-35);
 		
 	}
 
@@ -132,7 +132,7 @@ public class Ant extends Moveable implements IDrawable{
 	public void accelerateSpeed() {
 		int currentSpeed= getSpeed(); 
 		if(currentSpeed!=getMaxSpeed() && currentSpeed<maxSpeed) {
-			this.setSpeed(currentSpeed+5);
+			super.setSpeed(currentSpeed+1);
 		}else {
 			System.out.println("Speed cannot go past max speed"); 
 		}
@@ -140,11 +140,11 @@ public class Ant extends Moveable implements IDrawable{
 		
 	//Brake or decrease speed of ant
 	public void decreaseAntSpeed() {
-		int currSpeed=getSpeed(); 
-		int negSpeed=currSpeed*-1;
-		if(currSpeed>0) {
-			this.setSpeed(negSpeed);
+		
+		if(getSpeed()>0) {
+			super.setSpeed(getSpeed()-1);
 		}
+		
 	}
 	
 	//loses health points if makes a collision with a spider
@@ -160,7 +160,6 @@ public class Ant extends Moveable implements IDrawable{
 		}
 		
 		if (healthLevel==0) {
-			this.setSpeed(0);
 			lives--; 
 		}
 	}
@@ -172,12 +171,12 @@ public class Ant extends Moveable implements IDrawable{
 	}
 
 	//Resetting ant after it has ran out of food or lost a life
-	public void antReset(float flagX, float flagY) {
+	public void antReset(float flagX, float flagY, GameWorld gw) {
 		this.setLocation(new Point(flagX,flagY)); 
 		this.setHeading(0);
 		this.maxSpeed= 50; 
 		this.foodConsumptionRate=2; 
-		this.foodLevel=500;
+		this.foodLevel=3000;
 		this.healthLevel=10; 
 		lives--;
 	}
@@ -195,11 +194,8 @@ public class Ant extends Moveable implements IDrawable{
 		
 		g.fillArc(x, y, this.getSize(), this.getSize(), 0, 360);
 		
-		double line= Math.toRadians(90-super.getHeading()); 
-		double steerX=((Math.cos(line)*50)+this.getX()+pCmpRelPoint.getX()); 
-		double steerY=((Math.cos(line)*50)+this.getY()+pCmpRelPoint.getY()); 
 		g.setColor(ColorUtil.BLACK);
-		g.drawLine((int)this.getX()+(int)pCmpRelPoint.getX(), (int)this.getY()+20+(int)pCmpRelPoint.getY(), (int)steerX,(int)steerY);
+		
 		
 		
 		
