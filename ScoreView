@@ -1,6 +1,4 @@
 package com.mycompany.a3;
-
-
 import java.util.Observable;
 import java.util.Observer;
 
@@ -43,6 +41,7 @@ public class ScoreView extends Container implements Observer{
 		livesLabel.getAllStyles().setPadding(RIGHT, 3);
 		this.add(lifeLabel);
 		this.add(livesLabel); 
+		
 	}
 	
 	//adding a label for clock
@@ -109,13 +108,13 @@ public class ScoreView extends Container implements Observer{
 		gw=(GameWorld) data; 
 		this.livesLabel.setText(" "+gw.getLife());
 		this.clockLabel.setText(" "+gw.getTime());
-		this.lastFlagReachedLabel.setText(" "+gw.getLastFlagReacged());
+		this.lastFlagReachedLabel.setText(" "+gw.getLastFlagReached());
 		this.foodLevelLabel.setText(" "+gw.getFoodLevel());
 		this.healthLevelLabel.setText(" "+gw.getHealthLevel());
 		
 		if(gw.getSound()) {
 			this.soundValueLabel.setText("ON");
-			
+			System.out.println("Sound ON");
 		}else {
 			this.soundValueLabel.setText("OFF"); 
 		}
