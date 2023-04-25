@@ -1,58 +1,37 @@
 package com.mycompany.a3;
 
-import com.codename1.charts.models.Point;
+import com.codename1.ui.Graphics;
+import com.codename1.charts.models.Point; 
+
 public abstract class Fixed extends GameObject implements ISelectable{
-		private boolean select; 
-		
-	
-		//calling color
-		public Fixed(int color,GameWorld gw) {
-			super(color,gw);
+	private boolean selected;
+	public Fixed(int color,GameWorld gw) {
+		super(color,gw);
+	}
+	public Fixed(int color, int size,GameWorld gw) {
+		super(color,size,gw);
+	}
+
+	@Override
+	public void setLocation(float X, float Y) {
+		if(selected) 
+			super.setLocation(X, Y);
 		}
-		//constructor to call color and size
-		public Fixed(int color,int size,GameWorld gw) {
-			super(color,size, gw);
-		}
-		//cannot set location of a fixed object
-		public void setLocation(Point location) {
-			
-			if(select) { 
-				super.setLocation(location);
-			}
-		}
-		
-		public void setSelected(boolean n) {
-			select=n; 
-		} 
-		
-		public boolean isSelected() { 
-			return select; 
-		}
-		
-		public boolean contains(Point pPtrRelPoint, Point pCmpPrnt) { 
-			int radius=super.getSize()/2; 
-			int left=(int)Math.round(super.getX()-radius+pCmpPrnt.getX());
-			int right= left+super.getSize(); 
-			int top=(int)Math.round(super.getY()-radius+pCmpPrnt.getY()) ;
-			int bottom= top+super.getSize(); 
-			
-			
-			
-			boolean checkedLR= pPtrRelPoint.getX() > left && pPtrRelPoint.getX() <right; 
-			boolean checkedTB=  pPtrRelPoint.getY() > top && pPtrRelPoint.getY() <bottom;
-			
-			
-			return checkedLR && checkedTB; 
-			
-		}
-		
-		public void setLocation(int newX, int newY) {
-			if(select) { 
-				Point loc= new Point(newX,newY); 
-				super.setLocation(loc); 
-			}
-			
-		}
-		
-			
-} 	
+	public void setSelected(boolean y) {
+		selected = y;
+	}
+	public boolean isSelected() {
+		return selected;
+	}
+	public boolean contains(Point clickPoint, Point originalPoint) {
+		int radius = super.getSize() / 2;
+		int left = (int)Math.round(super.getX() - radius + originalPoint.getX());
+		int right = left + super.getSize();
+		int top = (int)Math.round(super.getY() - radius + originalPoint.getY());
+		int bottom = top + super.getSize();
+		boolean checkedLR = clickPoint.getX() > left && clickPoint.getX() < right;
+		boolean checkedTB = clickPoint.getY() > top && clickPoint.getY() < bottom;
+		return checkedLR && checkedTB;
+	}
+
+}
