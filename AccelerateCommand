@@ -12,9 +12,10 @@ public class AccelerateCommand extends Command{
 	}
 	//Displays this output on press of button 
 	public void actionPerformed(ActionEvent e) { 
-		gw.accelerateSpeed(); 
+		gw.increaseSpeed(); 
 		System.out.println("Accelerate Speed Invoked");
 	}
 	
 
 }
+
