@@ -1,27 +1,27 @@
 package com.mycompany.a3;
 
-import com.codename1.media.Media;
-import com.codename1.ui.Display;
 import java.io.InputStream;
-import com.codename1.media.MediaManager;
 
-public class Sound{
+import com.codename1.media.Media;
+import com.codename1.media.MediaManager;
+import com.codename1.ui.Display;
+
+public class Sound {
+	private Media m;
 	
-	private Media m; 
-	
-	public Sound(String file) { 
-		try {
-			InputStream input= Display.getInstance().getResourceAsStream(getClass(),"/"+file); 
-			m=MediaManager.createMedia(input,"audio/wav"); 
+	public Sound(String fileName) { 
+		
+		try { 
+			InputStream in =Display.getInstance().getResourceAsStream(getClass(),"/"+fileName); 
+			m=MediaManager.createMedia(in, "audio/wav"); 
+		}catch(Exception s) { 
+			System.out.println("Cannot play sound"); 
 			
-		}catch(Exception s){
-			s.printStackTrace(); 
+			
 		}
 	}
-	
 	public void play() {
 		m.setTime(0);
 		m.play(); 
 	}
-
 }
