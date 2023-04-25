@@ -1,58 +1,47 @@
 package com.mycompany.a3;
+
 import com.codename1.charts.models.Point;
 
 public abstract class Moveable extends GameObject{
 	//attibutes 
 			private int speed;
 			private int heading;
-			
 
 			public Moveable (int color, GameWorld gw) {
-				super(color,gw); 
+				super(color, gw); 
 			}
 
-			public Moveable (int color,int size,GameWorld gw) {
-				super(color,size,gw); 
+			public Moveable (int color,int size, GameWorld gw) {
+				super(color,size, gw); 
 			}
 			//the move for a moveable Object
-			public void move() { 
+			public void move(int time) { 
+				Point oldLocation;//old location before move
+				Point newLocation;//new location after
+				float angle;//Theta
+				float deltaX;
+				float deltaY;
+				float elapsedTime=time/1000; 
+				float distX= speed*elapsedTime; 
+				float distY=speed*elapsedTime; 
 				
-				int x =(int) (this.getX()+(int)Math.cos(Math.toRadians(90-this.heading))*speed); 
-				int y =(int) (this.getY()+(int)Math.sin(Math.toRadians(90-this.heading))*speed); 
-				int angle= 0; 
-				if (this instanceof Ant) { 
-					angle=50; 
-					
-				}else if(this instanceof Spider){
-					angle=50; 	
-				}
+				//grabbing location of object 
+				oldLocation =getLocation(); 
+				//instantiating new location Point
+				newLocation = new Point();
+
+				//need a new angle due to the new baring
+				angle = 90-getHeading();  
+				deltaX = 0;
+				deltaY = 0; 
+				//casting to floats 
+				deltaX=(float) (Math.cos(Math.toRadians(angle))*distX); 
+				deltaY=(float) (Math.sin(Math.toRadians(angle))*distY); 
 				
-				int origX=(int)MapView.getMapViewOrigin().getX(); 
-				int origY=(int)MapView.getMapViewOrigin().getY();
-				//Right
-				if(origX+ x +angle >= MapView.getMapViewWidth()+ origX && (heading !=0 || heading!=180)) {
-					setHeading(360-heading); 
-					
-				}
-				//Bottom
-				if(origX + x+ angle >= origX+GameWorld.getGameHeight()) { 
-					setHeading((360-heading+180)%360); 
-				}
+				newLocation.setX(deltaX+oldLocation.getX());
+				newLocation.setY(deltaY+oldLocation.getY());
 				
-				//Left 
-				if(origX+ x  <= origX+20  && (heading !=0 || heading!=180)) {
-					setHeading(360-heading); 
-					
-				}
-				
-				//top
-				if(origY+y <=origY) {
-					setHeading((360-heading+180)%360); 
-					
-				}
-				Point loc= new Point(x,y); 
-				
-				this.setLocation(loc); 
+				this.setLocation(newLocation);
 				
 			}
 
@@ -69,13 +58,13 @@ public abstract class Moveable extends GameObject{
 			}
 
 			public void setHeading(int heading) {
-				while(heading>= 360) { 
-					heading-=360; 
+				while(heading >= 360.0) {
+					heading -= 360.0;
+				} 
+				while(heading < 0.0) {
+					heading += 360.0;
 				}
-				while (heading < 0){ 
-					heading+=360; 
-				}
-				this.heading=heading; 
+				this.heading = heading;
 			}
 			//overriden toString()
 			public String toString() {
@@ -84,6 +73,4 @@ public abstract class Moveable extends GameObject{
 				String displayString=parentString+s;
 				return displayString; 
 			}
-
-			
 	}
