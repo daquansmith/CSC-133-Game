@@ -6,12 +6,13 @@ import com.codename1.ui.Graphics;
 
 public class Flag extends Fixed implements IDrawable{
 	private int sequenceNumber;
-	private static GameWorld gw; 
+	private GameWorld gw; 
 	//default flag constructor
-	public Flag(int sequenceNumber) {
-		super(ColorUtil.rgb(0, 0, 255),10, gw); 
+	public Flag(int sequenceNumber, GameWorld gw) {
+		super(ColorUtil.rgb(0, 0, 255),100, gw); 
 		this.sequenceNumber=sequenceNumber; 
 	
+		
 	}
 	//get sequence number
 	public int getSequenceNumber() {
@@ -33,31 +34,15 @@ public class Flag extends Fixed implements IDrawable{
 		return displayString; 
 	}
 	
-	public void handleCollision(GameObject object) { 
-		if(this instanceof Flag && object instanceof Ant) { 
-			
-			if(((Ant) object).getLastFlagReached()+1==this.getSequenceNumber() && this.getSequenceNumber()!=9) {
-				System.out.println("Ant has reached the next flag"); 
-				((Ant) object).setLastFlagReached(this.getSequenceNumber()) ;
-				
-			}else if(this.getSequenceNumber()==9 && object instanceof Ant) {
-				if(((Ant) object).getLastFlagReached()+1==9){
-				System.out.println("YOU WIN!! Total Time: "+ super.getGW().getTime()); 
-				gw.exit(); 
-				}
-			}
-		}
-	}
-	
-	
-	public void draw(Graphics g, Point pCmpRelPoint) {
+	@Override
+	public void draw(Graphics g, Point pCmpRelPrnt) {
 		g.setColor(super.getColor());
 		
-		int x= (int) ((int)Math.round(this.getX()-10)+ pCmpRelPoint.getX()); 
-		int y= (int) ((int)Math.round(this.getY()-10)+ pCmpRelPoint.getY()); 
+		int x= (int) ((int)Math.round(this.getX()-10)+ pCmpRelPrnt.getX()); 
+		int y= (int) ((int)Math.round(this.getY()-10)+ pCmpRelPrnt.getY()); 
 		
-		int locX=(int) ((int)this.getLocation().getX()+pCmpRelPoint.getX()); 
-		int locY=(int) ((int)this.getLocation().getY()+pCmpRelPoint.getY()); 
+		int locX=(int) ((int)this.getLocation().getX()+pCmpRelPrnt.getX()); 
+		int locY=(int) ((int)this.getLocation().getY()+pCmpRelPrnt.getY()); 
 		
 		int[] xAxis= {locX,(locX-20),(locX +20),locX}; 
 		int[] yAxis= {(locY+30),(locY-30),(locY-30),(locY+30)}; 
@@ -74,5 +59,10 @@ public class Flag extends Fixed implements IDrawable{
 		g.drawString(""+this.sequenceNumber, x, y);
 		
 	}
-
+	@Override
+	public void handleCollision(GameObject other) {
+		if(this instanceof Flag && other instanceof Ant) { 
+			
+		}
+	}	
 }
