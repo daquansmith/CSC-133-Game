@@ -1,62 +1,76 @@
 package com.mycompany.a3;
 
-import java.util.Observable;
-import java.util.Observer;
-import com.codename1.ui.Graphics;
-import com.codename1.charts.models.Point; 
-import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.plaf.Border;
-import com.codename1.charts.util.ColorUtil;
-import com.codename1.ui.Container;
-public class MapView extends Container implements Observer  {
-	//private TextArea gameText;
-	private static int height;
-	private static int width;
-	
-	static private Point mapViewOrigin;
-	private GameWorld gw;
-	
-	
-	public MapView() {
-		this.getAllStyles().setBorder(Border.createLineBorder(10,ColorUtil.rgb(255, 0, 0)));
-		MapView.height = this.getHeight();
-		MapView.width = this.getWidth();
+import com.codename1.charts.models.Point;
 
-		this.setLayout(new BorderLayout());
-		this.getAllStyles().setBgColor(ColorUtil.WHITE);
-		this.getAllStyles().setBgTransparency(255);
-	}
-	public static int getMapViewWidth() { return width; }
-	public static int getMapViewHeight() { return height; }
-	public static void setMapViewWidth(int width) { MapView.width = width; }
-	public static void setMapViewHeight(int height) { MapView.height = height; }
-	
-	public void setMapViewOrigin(Point p) { MapView.mapViewOrigin = p; }
-	public static Point getMapViewOrigin() { return mapViewOrigin; }
+public abstract class Moveable extends GameObject{
+	//attibutes 
+			private int speed;
+			private int heading;
 
-	@Override
-	public void update(Observable observable, Object data) {
-		gw = (GameWorld) data;
-		this.repaint();
-	}
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-		Point pCmpRelPrnt = new Point(this.getX(), this.getY());
-		IIterator itr = gw.getCollection().getIterator();
-		while(itr.hasNext()) {
-			GameObject tempObject = itr.getNext();
-			if (tempObject instanceof IDrawable) {
-				((IDrawable) tempObject).draw(g, pCmpRelPrnt);
+			public Moveable (int color, GameWorld gw) {
+				super(color, gw); 
 			}
-		}
+
+			public Moveable (int color,int size, GameWorld gw) {
+				super(color,size, gw); 
+			}
+			//the move for a moveable Object
+			public void move(int time) { 
+				Point oldLocation;//old location before move
+				Point newLocation;//new location after
+				float angle;//Theta
+				float deltaX;
+				float deltaY;
+				float elapsedTime=time/1000; 
+				float distX= speed*elapsedTime; 
+				float distY=speed*elapsedTime; 
+				
+				//grabbing location of object 
+				oldLocation =getLocation(); 
+				//instantiating new location Point
+				newLocation = new Point();
+
+				//need a new angle due to the new baring
+				angle = 90-getHeading();  
+				deltaX = 0;
+				deltaY = 0; 
+				//casting to floats 
+				deltaX=(float) (Math.cos(Math.toRadians(angle))*distX); 
+				deltaY=(float) (Math.sin(Math.toRadians(angle))*distY); 
+				
+				newLocation.setX(deltaX+oldLocation.getX());
+				newLocation.setY(deltaY+oldLocation.getY());
+				
+				this.setLocation(newLocation);
+				
+			}
+
+				//getters and setters 
+				public int getSpeed() {
+					return this.speed; 
+				}
+				public int getHeading() {
+					return this.heading;
+				}
+
+			public void setSpeed(int speed) {
+				this.speed=this.speed+speed;
+			}
+
+			public void setHeading(int heading) {
+				while(heading >= 360.0) {
+					heading -= 360.0;
+				} 
+				while(heading < 0.0) {
+					heading += 360.0;
+				}
+				this.heading = heading;
+			}
+			//overriden toString()
+			public String toString() {
+				String parentString =super.toString(); 
+				String s= " Speed = "+speed+" Heading= "+heading;
+				String displayString=parentString+s;
+				return displayString; 
+			}
 	}
-	@Override
-	public void pointerPressed(int x, int y ) {
-		Point clickPoint = new Point(x - getParent().getAbsoluteX(), y - getParent().getAbsoluteY());
-		Point originalPoint = new Point(getX(), getY());
-		if(gw.getPause()) {
-			gw.click(clickPoint, originalPoint);
-		}
-	}
-}    
