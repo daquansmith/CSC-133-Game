@@ -1,19 +1,39 @@
 package com.mycompany.a3;
 
-import com.codename1.ui.Command;
-import com.codename1.ui.events.ActionEvent;
+import java.io.InputStream;
 
-public class BrakeCommand extends Command{
-	private GameWorld gw; 
-	//This command makes the ant slow down
-	public BrakeCommand(GameWorld gw) {
-		super("Brake"); 
-		this.gw=gw; 
+import com.codename1.media.Media;
+import com.codename1.media.MediaManager;
+import com.codename1.ui.Display;
+
+public class BGSound implements Runnable {
+
+	private Media m; 
+	
+	public BGSound(String fileName) { 
+		try { 
+			InputStream inputStream =Display.getInstance().getResourceAsStream(getClass(),"/"+fileName);
+			
+			m=MediaManager.createMedia(inputStream, "audio/wav",this); 
+			
+		}catch(Exception s) { 
+			s.printStackTrace(); 
+			System.out.println("Sound cannot be played"); 
+		}
 	}
-	//Displays this when button is pressed
-	public void actionPerformed(ActionEvent e) {
-		gw.decreaseSpeed();
-		System.out.println("Decrease speed invoked"); 
+	public void pause() {
+		m.pause(); 
+	}
+
+	public void play() {
+		m.play(); 
+		
+	}
+	@Override
+	public void run() {
+		m.setTime(0); 
+		m.play(); 
+		
 	}
 
 }
