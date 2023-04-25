@@ -105,6 +105,7 @@ public abstract class GameObject implements ICollider{
 	}
 
 	public GameWorld getGw() { return gw; }
+	
 	public ArrayList<GameObject> getObjects () {
 		return cols;
 	}
