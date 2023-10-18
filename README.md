@@ -1,4 +1,5 @@
-# A1Prj
-CSC 133 Project assignement 1
+# CSC 133 Game Devolpment
 
-ECS SCL1234 BONES 
+This is a place where I store my game that I developed in my CSC 133 class. 
+
+
